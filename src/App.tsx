@@ -1,7 +1,7 @@
 export const App = () => {
   return (
     <>
-      <h1>App</h1>
+      <h1 className="text-red-500">App</h1>
     </>
   );
 };
