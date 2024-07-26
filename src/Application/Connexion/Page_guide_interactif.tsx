@@ -1,6 +1,6 @@
-import {NavLink} from "react-router-dom";
+import React, {Dispatch} from "react";
 
-export const FirstPageGI = () => {
+export const FirstPageGI: React.FC<{onClick: Dispatch<React.SetStateAction<number>>}> = ({onClick}) => {
 
   return (
     <>
@@ -12,9 +12,7 @@ export const FirstPageGI = () => {
           L'application Tree low est un moyen de gérer ces rendez-vous projet ou encore des tâches à effectuer.
           Vous pouvez personnaliser votre propre tableau via plusieurs moyens.
         </p>
-        <NavLink to="/secondpagegi">
-        <button className="next-button absolute bottom-4 right-4 mt-8">Suivant</button>
-      </NavLink>
+        <button onClick={() => onClick(1)} className="next-button absolute bottom-4 right-4 mt-8">Suivant</button>
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 import {NavLink} from "react-router-dom";
+import React, {Dispatch} from "react";
 
-export const SecondPageGI = () => {
+export const SecondPageGI: React.FC<{onClick: Dispatch<React.SetStateAction<number>>}> = ({onClick}) => {
   return (
     <>
       <div className="flex flex-col items-center justify-center">
@@ -10,9 +11,7 @@ export const SecondPageGI = () => {
         <p className="text-center mt-8">
           Créé votre compte et n’hésite pas à sauvegarder votre mot de passe et Suivez les étapes  suivantes  du guide interactif afin de pouvoir  terminer le guide
         </p>
-        <NavLink to="/thirdpagegi">
-        <button className="next-button absolute bottom-4 right-4 mt-8">Suivant</button>
-      </NavLink>
+        <button onClick={() => onClick(2)} className="next-button absolute bottom-4 right-4 mt-8">Suivant</button>
       </div>
     </>
   );

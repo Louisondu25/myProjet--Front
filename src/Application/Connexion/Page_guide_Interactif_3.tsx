@@ -1,6 +1,6 @@
-import {NavLink} from "react-router-dom";
+import React, {Dispatch} from "react";
 
-export const ThirdPageGI = () => {
+export const ThirdPageGI: React.FC<{setSkipVerrouillage: Dispatch<React.SetStateAction<boolean>>}> = ({setSkipVerrouillage}) => {
   return (
     <>
       <div className="flex flex-col items-center justify-center">
@@ -22,9 +22,7 @@ export const ThirdPageGI = () => {
         <p className="text-center">Ajouter des membres</p>
         <p className="text-center mt-8">et plein d'autres choses à découvrir</p>
         <p className="text-center mt-8">À Vous de jouer</p>
-        <NavLink to="/">
-          <button className="next-button absolute bottom right-2 mt-2">Terminée</button>
-        </NavLink>
+          <button onClick={() => setSkipVerrouillage(true)} className="next-button absolute bottom right-2 mt-2">Terminée</button>
       </div>
     </>
   );
