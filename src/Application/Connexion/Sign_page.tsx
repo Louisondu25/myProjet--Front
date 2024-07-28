@@ -1,3 +1,5 @@
+import { NavLink } from "react-router-dom"
+
 export const Signpage = () => {
     return(
         <>
@@ -9,8 +11,12 @@ export const Signpage = () => {
                 <p className="ml-2">Tree low</p>
             </div>
             <div className="flex mr-5 space-x-5 text-white ">
-                <button className="shadow-md hover:shadow-lg bg-blue-900 rounded-md px-6 py-2">Inscription</button>
-                <button className= " shadow-md hover:shadow-lg bg-green-500 rounded-md px-6 py-2">Connexion</button>
+                <NavLink to={"/register"}>
+                <button className="shadow-md hover:shadow-lg bg-blue-900 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg ">Inscription</button>
+                </NavLink>
+                <NavLink to={"/connect"}>
+                <button className= " shadow-md hover:shadow-lg bg-green-500 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg">Connexion</button>
+                </NavLink>
             </div>
         </div>
         </header>
