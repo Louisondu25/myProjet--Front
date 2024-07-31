@@ -12,10 +12,10 @@ export const Signpage = () => {
             </div>
             <div className="flex mr-5 space-x-5 text-white ">
                 <NavLink to={"/register"}>
-                <button className="shadow-md hover:shadow-lg bg-blue-900 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg ">Inscription</button>
+                <button className="bg-blue-900 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg ">Inscription</button>
                 </NavLink>
                 <NavLink to={"/connect"}>
-                <button className= " shadow-md hover:shadow-lg bg-green-500 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg">Connexion</button>
+                <button className= "bg-green-500 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg">Connexion</button>
                 </NavLink>
             </div>
         </div>
@@ -23,7 +23,9 @@ export const Signpage = () => {
         <body className="text-center mt-32 ">
             <h1 className=" text-xl font-bold w-15">Tree Low Permet de travailler tous en étant organisés</h1>
             <p className="text-lg mt-36">Venez essayer </p>
+            <NavLink to={"/giversdashboard"}>
             <button className="text-lg bg-white rounded-md mt-28 px-6 py-2 text-gray-800 font-medium shadow-md hover:shadow-lg">Crée un tableau</button>
+            </NavLink>
             <p className="mt-28">Pret a utilisé Tree Low ?</p>
         </body>
         </div>
