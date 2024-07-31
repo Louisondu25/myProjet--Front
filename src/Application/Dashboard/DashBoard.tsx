@@ -1,4 +1,4 @@
-import { MultiSelect } from '@mantine/core';
+
 import { CiSearch } from "react-icons/ci";
 import { TbInfoSquareRoundedFilled } from "react-icons/tb";
 import { IoIosNotifications } from "react-icons/io";
@@ -6,9 +6,13 @@ import { MdAccountCircle } from "react-icons/md";
 import { FaCalendarDays } from "react-icons/fa6";
 import { CiMenuKebab } from "react-icons/ci";
 
-const data = Array(100).fill(0).map((_, index) => `Option ${index}`);
-
 export const Dashboard = () => {
+//       const {attributes, listeners, setNodeRef, transform} = useDraggable({
+//     id: 'draggable',
+//   });
+//   const style = transform ? {
+//     transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+//   } : undefined;
     return(
         <>
         <div className=" bg-blue-800">
@@ -39,10 +43,12 @@ export const Dashboard = () => {
                     <button className=" flex justify-center items-center bg-blue-200 rounded-sm px-2  font-medium shadow-md hover:shadow-lg"><FaCalendarDays />Calendrier</button>
                     <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg mr-2"><CiMenuKebab />Afficher le menu</button>
                 </div>
-                <div>
-                    <MultiSelect label="With scroll area (default)" placeholder="Pick value" data={data} maxDropdownHeight={200}/>
-                    <MultiSelect label="With native scroll" placeholder="Pick value" data={data} withScrollArea={false} styles={{ dropdown: { maxHeight: 200, overflowY: 'auto' } }} mt="md"/>
-                </div>
+                {/* <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+                    {props.children} blabla
+                </button>
+                <button ref={setNodeRef} style={style}>
+                    {props.children} hello
+                </button> */}
             </body>
         </>
     )
