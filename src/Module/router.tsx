@@ -6,6 +6,9 @@ import { Connect } from "../Application/Connexion/Button Connexion/Connexion.tsx
 import { Sendrecoverylink } from "../Application/Connexion/Button Connexion/SendRecoveryLink .tsx";
 import { Giversdashboard } from "../Application/Connexion/Guide Interactif/GIVersDashboard.tsx";
 import { Dashboard } from "../Application/Dashboard/DashBoard.tsx";
+import { Testdnd } from "../Application/Dashboard/Testdnd.tsx"
+import { Menu } from "../Application/Dashboard/Menu.tsx"
+import { CalendarDashboard } from "../Application/Dashboard/Calendar.tsx";
 
 
 export const router = createBrowserRouter([
@@ -36,5 +39,17 @@ export const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <Dashboard/>
+    },
+    {
+        path: "/menu",
+        element: <Menu/>
+    },
+    {
+        path: "/testdnd",
+        element: <Testdnd/>
+    },
+    {
+        path: "/calendar",
+        element: <CalendarDashboard/>
     },
 ])

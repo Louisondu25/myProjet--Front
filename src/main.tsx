@@ -4,12 +4,16 @@ import "./Infrastructure/Style/index.css";
 import {RouterProvider} from "react-router-dom";
 import {router} from "./Module/router.tsx";
 import React from 'react';
-import {DndContext} from '@dnd-kit/core';
+import { App } from "./App.tsx";
+import { MantineProvider } from "@mantine/core";
+
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <DndContext>
-<React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-    </DndContext>
+      <React.StrictMode>
+          <MantineProvider>
+        <RouterProvider router={router} />
+            <App />
+          </MantineProvider>
+      </React.StrictMode>
 );
