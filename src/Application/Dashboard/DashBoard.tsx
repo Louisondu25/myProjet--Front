@@ -52,9 +52,12 @@ export const Dashboard = () => {
         Tableau
       </label>
       <p>Team Board</p>
-      <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 mt-3 font-medium mr-24">
+      <NavLink to={"/membres"}>
+        <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 mt-3 font-medium mr-24">
         Invite <FaPlus />
       </button>
+      </NavLink>
+      
       <div className="flex gap-1">
        <NavLink to={"/calendar"}> <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg">
           <FaCalendarDays />Calendrier

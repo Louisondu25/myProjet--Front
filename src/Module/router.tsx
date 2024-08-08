@@ -7,8 +7,14 @@ import { Sendrecoverylink } from "../Application/Connexion/Button Connexion/Send
 import { Giversdashboard } from "../Application/Connexion/Guide Interactif/GIVersDashboard.tsx";
 import { Dashboard } from "../Application/Dashboard/DashBoard.tsx";
 import { Testdnd } from "../Application/Dashboard/Testdnd.tsx"
-import { Menu } from "../Application/Dashboard/Menu.tsx"
-import { CalendarDashboard } from "../Application/Dashboard/Calendar.tsx";
+import { Menu } from "../Application/Dashboard/Menu/Menu.tsx"
+import { CalendarDashboard } from "../Application/Dashboard/Calendar/Calendar.tsx";
+import { Members } from "../Application/Dashboard/Members.tsx";
+import { Plus } from "../Application/Dashboard/Menu/Plus/Plus.tsx";
+import { SearchArchivedCard } from "../Application/Dashboard/Menu/SearchArchivedCard.tsx/SearchArchivedCard.tsx";
+import { ChangeBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangeBackground.tsx";
+import { ChangeColorBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangeColorBackground.tsx";
+import { ChangePictureBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangePictureBackground.tsx";
 
 
 export const router = createBrowserRouter([
@@ -51,5 +57,30 @@ export const router = createBrowserRouter([
     {
         path: "/calendar",
         element: <CalendarDashboard/>
+    },
+    {
+        path: "/membres",
+        element: <Members/>
+    },
+    {
+        path: "/plus",
+        element: <Plus/>
+    },
+    {
+        path: "/cartearchivés",
+        element: <SearchArchivedCard/>
+    },
+    {
+        path: "/changebackground",
+        element: <ChangeBackground/>
+        //pourquoi pas faire outlet pour changer de fond d'ecran
+    },
+    {
+        path: "/changecolorbackground",
+        element: <ChangeColorBackground/>
+    },
+    {
+        path: "/changepicturebackground",
+        element: <ChangePictureBackground/>
     },
 ])
