@@ -1,5 +1,6 @@
-import { Calendar } from '@mantine/dates';
+import {DatePicker} from '@mantine/dates';
 import { useEffect, useState } from 'react';
+import {Flex} from "@mantine/core";
 
 export const CalendarDashboard = () => {
   const [today, setToday] = useState(new Date());
@@ -20,7 +21,7 @@ export const CalendarDashboard = () => {
   return (
     <>
 <div className="w-full h-screen bg-gradient-to-b to-blue-500 from-cyan-500 to-white">
-<div className="h-screen flex flex-col">
+<div style={{width: "100%", height: "100%"}} className="h-full flex flex-col">
   <header className="flex justify-between p-4 bg-cyan-500">
     <p className="text-lg bg-black text-white rounded-md px-6 py-2 font font-medium ml-2">
       Aujourd'hui: {today.toLocaleDateString()}
@@ -34,9 +35,9 @@ export const CalendarDashboard = () => {
       </button>
     </div>
   </header>
-  <div >
-    <Calendar className="flex-1 text-lg  justify-center items-center" />
-  </div>
+  <Flex justify={"center"} align={"center"}>
+    <DatePicker size={"xl"} style={{width: "100%", height: "100%"}}/>
+  </Flex>
 </div>
 </div>
     </>
