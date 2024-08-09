@@ -15,6 +15,7 @@ import { SearchArchivedCard } from "../Application/Dashboard/Menu/SearchArchived
 import { ChangeBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangeBackground.tsx";
 import { ChangeColorBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangeColorBackground.tsx";
 import { ChangePictureBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangePictureBackground.tsx";
+import { CreatedBoard } from "../Application/Dashboard/CreatedBoard.tsx";
 
 
 export const router = createBrowserRouter([
@@ -82,5 +83,9 @@ export const router = createBrowserRouter([
     {
         path: "/changepicturebackground",
         element: <ChangePictureBackground/>
+    },
+    {
+        path: "/createboard",
+        element: <CreatedBoard/>
     },
 ])

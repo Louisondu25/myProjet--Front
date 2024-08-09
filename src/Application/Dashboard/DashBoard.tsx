@@ -33,7 +33,9 @@ export const Dashboard = () => {
           <CiSearch className="text-white" />
           <input type="text" placeholder="Rechercher" className="rounded-sm" />
         </div>
+        <NavLink to={"/createboard"}>
         <button className="bg-white rounded-md px-6 py-1 font-medium">Crée</button>
+        </NavLink>
         <div className="text-xl flex space-x-4 mr-4 text-white">
           <button>
             <TbInfoSquareRoundedFilled />
