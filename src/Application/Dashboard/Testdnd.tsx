@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { GiCardAceSpades } from "react-icons/gi";
+import { RiArchiveStackFill } from "react-icons/ri";
+
 
 interface Task {
   id: number;
@@ -44,10 +46,15 @@ export const Testdnd = () => {
     }
   };
 
-  const handleArchiveTasks = () => {
-    setFinishedTasks((prevTasks) => prevTasks.filter((t) => !selectedTasks.includes(t)));
-    setSelectedTasks([]);
-  };
+const handleArchiveTasks = () => {
+  setFinishedTasks((prevTasks) => prevTasks.filter((task) => !selectedTasks.includes(task)));
+  setSelectedTasks([]);
+};
+
+const handleArchiveAllTasks = () => {
+  setFinishedTasks([]);
+  setSelectedTasks([]);
+};
 
   return (
     <div className="flex justify-center items-center">
@@ -113,13 +120,19 @@ export const Testdnd = () => {
             {task.text}
           </div>
         ))}
-        <button
-          className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg"
+          <button
+          className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg mt-2 "
           onClick={handleArchiveTasks}
         >
-          <GiCardAceSpades /> Archiver les tâches sélectionnées
+          <RiArchiveStackFill/> Archiver
                </button>
+               <button
+                  className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg mt-2"
+                  onClick={handleArchiveAllTasks}
+                >
+                  <RiArchiveStackFill /> Archiver Toutes les tâches
+              </button>
+        </div>
       </div>
-    </div>
   );
 };
