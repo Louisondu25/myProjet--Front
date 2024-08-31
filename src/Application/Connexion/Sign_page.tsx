@@ -20,14 +20,14 @@ export const Signpage = () => {
             </div>
         </div>
         </header>
-        <body className="text-center mt-32 ">
+        <div className="text-center mt-32">
             <h1 className=" text-xl font-bold w-15">Tree Low Permet de travailler tous en étant organisés</h1>
             <p className="text-lg mt-36">Venez essayer </p>
             <NavLink to={"/giversdashboard"}>
             <button className="text-lg bg-white rounded-md mt-28 px-6 py-2 text-gray-800 font-medium shadow-md hover:shadow-lg">Crée un tableau</button>
             </NavLink>
             <p className="mt-28">Pret a utilisé Tree Low ?</p>
-        </body>
+        </div>
         </div>
         </>
     )

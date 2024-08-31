@@ -1,151 +1,5 @@
-// import { Column } from "./Colonnes";
-
-// export const Testdnd = () => {
-
-//   return (
-//     <>
-//         <Column/>
-//     </>
-//   );
-// };
-
-
-// import React, { useState } from 'react';
-
-// interface Item {
-//   id: number;
-//   text: string;
-// }
-
-// interface ColumnProps {
-//   items: Item[];
-//   onDrop: (item: Item) => void;
-// }
-
-// const Column: React.FC<ColumnProps> = ({ items, onDrop }) => {
-//   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-//     e.preventDefault();
-//   };
-
-//   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-//     const item = JSON.parse(e.dataTransfer.getData('item'));
-//     onDrop(item);
-//   };
-
-//   return (
-//     <div
-//       className="column  outline outline-1"
-//       onDragOver={handleDragOver}
-//       onDrop={handleDrop}
-//     >
-//       {items.map((item) => (
-//         <div
-//           key={item.id}
-//           draggable={true}
-//           onDragStart={(e) => {
-//             e.dataTransfer.setData('item', JSON.stringify(item));
-//           }}
-//         >
-//           {item.text}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export const Testdnd  = () => {
-//   const [column1Items, setColumn1Items] = useState<Item[]>([
-//     { id: 1, text: 'Item 1' },
-//     { id: 2, text: 'Item 2' },
-//     { id: 3, text: 'Item 3' },
-//   ]);
-
-//   const [column2Items, setColumn2Items] = useState<Item[]>([]);
-
-//   const handleDrop = (item: Item) => {
-//     setColumn1Items((prevItems) => prevItems.filter((i) => i.id !== item.id));
-//     setColumn2Items((prevItems) => [...prevItems, item]);
-//   };
-
-//   return (
-//     <div className="Testdnd">
-//       <Column items={column1Items} onDrop={handleDrop} />
-//       <Column items={column2Items} onDrop={() => {}} />
-//     </div>
-//   );
-// };
-
-// import React, { useState } from 'react';
-
-// interface Item {
-//   id: number;
-//   text: string;
-// }
-
-// interface ColumnProps {
-//   items: Item[];
-//   onDrop: (item: Item) => void;
-// }
-
-// const Column: React.FC<ColumnProps> = ({ items, onDrop }) => {
-//   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-//     e.preventDefault();
-//   };
-
-//   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-//     const item = JSON.parse(e.dataTransfer.getData('item'));
-//     onDrop(item);
-//   };
-
-//   return (
-//     <div
-//       className="column outline outline-1"
-//       onDragOver={handleDragOver}
-//       onDrop={handleDrop}
-//     >
-//       {items.map((item) => (
-//         <div
-//           key={item.id}
-//           draggable={true}
-//           onDragStart={(e) => {
-//             e.dataTransfer.setData('item', JSON.stringify(item));
-//           }}
-//         >
-//           {item.text}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// };
-
-// export const Testdnd = () => {
-//   const [column1Items, setColumn1Items] = useState<Item[]>([
-//     { id: 1, text: 'Item 1' },
-//     { id: 2, text: 'Item 2' },
-//     { id: 3, text: 'Item 3' },
-//   ]);
-
-//   const [column2Items, setColumn2Items] = useState<Item[]>([]);
-
-//   const handleDropColumn1 = (item: Item) => {
-//     setColumn2Items((prevItems) => [...prevItems, item]);
-//     setColumn1Items((prevItems) => prevItems.filter((i) => i.id !== item.id));
-//   };
-
-//   const handleDropColumn2 = (item: Item) => {
-//     setColumn1Items((prevItems) => [...prevItems, item]);
-//     setColumn2Items((prevItems) => prevItems.filter((i) => i.id !== item.id));
-//   };
-
-//   return (
-//     <div className="app">
-//       <Column items={column1Items} onDrop={handleDropColumn2} />
-//       <Column items={column2Items} onDrop={handleDropColumn1} />
-//     </div>
-//   );
-// };
-
 import React, { useState } from 'react';
+import { GiCardAceSpades } from "react-icons/gi";
 
 interface Task {
   id: number;
@@ -162,6 +16,7 @@ export const Testdnd = () => {
   ]);
 
   const [finishedTasks, setFinishedTasks] = useState<Task[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<Task[]>([]);
 
   const handleDragStart = (task: Task, e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('task', JSON.stringify(task));
@@ -181,8 +36,21 @@ export const Testdnd = () => {
     }
   };
 
+  const handleSelectTask = (task: Task) => {
+    if (selectedTasks.find((t) => t.id === task.id)) {
+      setSelectedTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+    } else {
+      setSelectedTasks((prevTasks) => [...prevTasks, task]);
+    }
+  };
+
+  const handleArchiveTasks = () => {
+    setFinishedTasks((prevTasks) => prevTasks.filter((t) => !selectedTasks.includes(t)));
+    setSelectedTasks([]);
+  };
+
   return (
-    <div className=" flex justify-center items-center">
+    <div className="flex justify-center items-center">
       <div
         className="column bg-gray-400 mt-2"
         style={{
@@ -198,17 +66,20 @@ export const Testdnd = () => {
           handleDropFinished(finishedTasks, task);
         }}
       >
-        <h2 className='bg-white rounded-sm mb-2 flex justify-center'>Tasks to Do</h2>
+        <h2 className="bg-white rounded-sm mb-2 flex justify-center">Tasks to Do</h2>
         {tasksToDo.map((task) => (
           <div
             key={task.id}
             draggable={true}
             onDragStart={(e) => handleDragStart(task, e)}
-            className='bg-gray-200 border border-black p-2 rounded mt-1'
+            className="bg-gray-200 border border-black p-2 rounded mt-1"
           >
             {task.text}
           </div>
         ))}
+        <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg">
+          <GiCardAceSpades /> Ajouter une carte
+        </button>
       </div>
       <div
         className="column bg-purple-400"
@@ -226,17 +97,28 @@ export const Testdnd = () => {
           handleDrop(tasksToDo, task);
         }}
       >
-        <h2 className='bg-white rounded-sm mb-2 '>Finished Tasks</h2>
+        <h2 className="bg-white rounded-sm mb-2 flex justify-center">Finished Tasks</h2>
         {finishedTasks.map((task) => (
           <div
             key={task.id}
             draggable={true}
             onDragStart={(e) => handleDragStart(task, e)}
-            className='bg-purple-200 border border-black p-2 rounded mt-1'
+            className="bg-gray-200 border border-black p-2 rounded mt-1"
           >
+            <input
+              type="checkbox"
+              checked={selectedTasks.includes(task)}
+              onChange={() => handleSelectTask(task)}
+            />
             {task.text}
           </div>
         ))}
+        <button
+          className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg"
+          onClick={handleArchiveTasks}
+        >
+          <GiCardAceSpades /> Archiver les tâches sélectionnées
+               </button>
       </div>
     </div>
   );

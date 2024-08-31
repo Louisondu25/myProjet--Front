@@ -1,7 +1,6 @@
 import {createBrowserRouter} from "react-router-dom";
 import {Skipornot} from "../Application/Connexion/Skip_or_not.tsx";
 import { Register } from "../Application/Connexion/Button Inscription/Inscription.tsx";
-import { Password } from "../Application/Connexion/Button Inscription/MotDePasse.tsx";
 import { Connect } from "../Application/Connexion/Button Connexion/Connexion.tsx";
 import { Sendrecoverylink } from "../Application/Connexion/Button Connexion/SendRecoveryLink .tsx";
 import { Giversdashboard } from "../Application/Connexion/Guide Interactif/GIVersDashboard.tsx";
@@ -16,6 +15,10 @@ import { ChangeBackground } from "../Application/Dashboard/Menu/ChangerFondEcran
 import { ChangeColorBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangeColorBackground.tsx";
 import { ChangePictureBackground } from "../Application/Dashboard/Menu/ChangerFondEcran/ChangePictureBackground.tsx";
 import { CreatedBoard } from "../Application/Dashboard/CreatedBoard.tsx";
+import { ArchivedCard } from "../Application/Dashboard/Menu/Plus/Archives/ArchivedCard.tsx";
+import { ArchivedList } from "../Application/Dashboard/Menu/Plus/Archives/ArchivedList.tsx";
+import { ArchivedBoard } from "../Application/Dashboard/Menu/Plus/Archive Tableau/ArchivedBoard.tsx";
+
 
 
 export const router = createBrowserRouter([
@@ -26,10 +29,6 @@ export const router = createBrowserRouter([
     {
         path: "/register",
         element: <Register/>
-    },
-    {
-        path: "/password",
-        element: <Password/>
     },
      {
         path: "/connect",
@@ -66,6 +65,7 @@ export const router = createBrowserRouter([
     {
         path: "/plus",
         element: <Plus/>
+        //pourquoi pas faire outlet pour plus
     },
     {
         path: "/cartearchivés",
@@ -87,5 +87,17 @@ export const router = createBrowserRouter([
     {
         path: "/createboard",
         element: <CreatedBoard/>
+    },
+    {
+        path: "/arhivecarte",
+        element: <ArchivedCard/>
+    },
+    {
+        path: "/arhiveliste",
+        element: <ArchivedList/>
+    },
+    {
+        path: "/arhivetableau",
+        element: <ArchivedBoard/>
     },
 ])

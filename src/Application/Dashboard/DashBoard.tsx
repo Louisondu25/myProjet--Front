@@ -9,6 +9,7 @@ import { GiCardAceSpades } from "react-icons/gi";
 import { RiArchiveStackFill } from "react-icons/ri";
 import { FaPlus } from "react-icons/fa6";
 import { useState } from 'react';
+import { Testdnd } from "../Dashboard/Testdnd";
 
 
 export const Dashboard = () => {
@@ -59,7 +60,6 @@ export const Dashboard = () => {
         Invite <FaPlus />
       </button>
       </NavLink>
-      
       <div className="flex gap-1">
        <NavLink to={"/calendar"}> <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg">
           <FaCalendarDays />Calendrier
@@ -82,6 +82,9 @@ export const Dashboard = () => {
         <FaPlus /> Ajouter une liste
       </button>
     </div>
+    <div className="flex gap-48 mt-1">
+          <Testdnd />
+        </div>
     <NavLink to={"/testdnd"}>
       <button>test dnd</button>
     </NavLink>

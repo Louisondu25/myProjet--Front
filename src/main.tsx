@@ -2,7 +2,7 @@ import "./Infrastructure/Style/index.css";
 import ReactDOM from "react-dom/client";
 import "./Infrastructure/Style/index.css";
 import {RouterProvider} from "react-router-dom";
-import {router} from "./Module/router.tsx";
+import {router} from "./Infrastructure/router.tsx";
 import React from 'react';
 import { MantineProvider } from "@mantine/core";
 
