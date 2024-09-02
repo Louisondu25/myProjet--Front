@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { GiCardAceSpades } from "react-icons/gi";
 import { RiArchiveStackFill } from "react-icons/ri";
+import { NavLink } from "react-router-dom"
+
 
 
 interface Task {
@@ -84,9 +86,11 @@ const handleArchiveAllTasks = () => {
             {task.text}
           </div>
         ))}
-        <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg">
+        <NavLink to={"/carte"}>
+          <button className="flex justify-center items-center bg-white rounded-sm  px-2 font-medium shadow-md hover:shadow-lg mt-2">
           <GiCardAceSpades /> Ajouter une carte
         </button>
+        </NavLink>
       </div>
       <div
         className="column bg-purple-400"
@@ -121,13 +125,13 @@ const handleArchiveAllTasks = () => {
           </div>
         ))}
           <button
-          className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg mt-2 "
+          className="flex justify-center items-center bg-white rounded-sm  px-2 font-medium shadow-md hover:shadow-lg mt-2 "
           onClick={handleArchiveTasks}
         >
           <RiArchiveStackFill/> Archiver
                </button>
                <button
-                  className="flex justify-center items-center bg-blue-200 rounded-sm px-2 font-medium shadow-md hover:shadow-lg mt-2"
+                  className="flex justify-center items-center bg-white rounded-sm px-2 font-medium shadow-md hover:shadow-lg mt-2"
                   onClick={handleArchiveAllTasks}
                 >
                   <RiArchiveStackFill /> Archiver Toutes les tâches

@@ -18,6 +18,10 @@ import { CreatedBoard } from "../Application/Dashboard/CreatedBoard.tsx";
 import { ArchivedCard } from "../Application/Dashboard/Menu/Plus/Archives/ArchivedCard.tsx";
 import { ArchivedList } from "../Application/Dashboard/Menu/Plus/Archives/ArchivedList.tsx";
 import { ArchivedBoard } from "../Application/Dashboard/Menu/Plus/Archive Tableau/ArchivedBoard.tsx";
+import { Settingcalendar } from "../Application/Dashboard/Menu/Plus/SettingCalendar.tsx";
+import { Theme } from "../Application/Dashboard/Menu/Plus/Theme.tsx";
+import { Astuce } from "../Application/Dashboard/Menu/Plus/Astuce.tsx";
+import { Card } from "../Application/Dashboard/Card.tsx";
 
 
 
@@ -99,5 +103,21 @@ export const router = createBrowserRouter([
     {
         path: "/arhivetableau",
         element: <ArchivedBoard/>
+    },
+    {
+        path: "/settingcalendar",
+        element: <Settingcalendar/>
+    },
+    {
+        path: "/theme",
+        element: <Theme/>
+    },
+     {
+        path: "/astuce",
+        element: <Astuce/>
+    },
+    {
+        path: "/carte",
+        element: <Card/>
     },
 ])

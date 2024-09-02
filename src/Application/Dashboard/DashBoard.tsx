@@ -5,8 +5,6 @@ import { IoIosNotifications } from "react-icons/io";
 import { MdAccountCircle } from "react-icons/md";
 import { FaCalendarDays } from "react-icons/fa6";
 import { CiMenuKebab } from "react-icons/ci";
-import { GiCardAceSpades } from "react-icons/gi";
-import { RiArchiveStackFill } from "react-icons/ri";
 import { FaPlus } from "react-icons/fa6";
 import { useState } from 'react';
 import { Testdnd } from "../Dashboard/Testdnd";
@@ -71,20 +69,17 @@ export const Dashboard = () => {
         </NavLink>
       </div>
     </div>
-    <div className="flex gap-48 mt-1">
-      <button className="flex justify-center items-center px-2 font-medium shadow-md hover:shadow-lg mr-2">
-        <GiCardAceSpades /> Ajouter une carte
-      </button>
-      <button className="flex justify-center items-center bg-white px-2 rounded-md font-medium shadow-md hover:shadow-lg mr-2">
-        <RiArchiveStackFill />Archives
-      </button>
-      <button className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-14">
-        <FaPlus /> Ajouter une liste
-      </button>
-    </div>
-    <div className="flex gap-48 mt-1">
+    <div className="flex gap-20 mt-1">
+        <div>
           <Testdnd />
         </div>
+        <div>
+      <button className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3">
+        <FaPlus /> Ajouter une liste
+      </button>
+        </div>
+      
+    </div>
     <NavLink to={"/testdnd"}>
       <button>test dnd</button>
     </NavLink>

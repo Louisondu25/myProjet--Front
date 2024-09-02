@@ -34,11 +34,13 @@ export const Plus = () => {
       </NavLink>
       <p className="text-lg text-gray-600">les noms, description et visibilité(privée ou publique)</p>
 
-      <button>
+      <NavLink to={"/settingcalendar"}>
+        <button>
         <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
         <FaCalendarAlt  className="mr-2"/> Calendrier
       </h2>
       </button>
+      </NavLink>
       <p className="text-lg text-gray-600">Paramètre  calendrier</p>
         </div>
         </>
