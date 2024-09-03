@@ -15,17 +15,18 @@ export const Card = () => {
           <button className="absolute bottom-0 right-0 bg-gray-700 text-white mr-2 px-6 py-1 rounded-sm flex items-center"><CiImageOn className="mr-2" /> Banniere</button>
         </div>
       </header>
-     <div className="flex flex">
-        <div className=" flex flex-col space-y-14 ml-2 font-medium">
+     <div className="flex gap-2">
+        <div className=" flex flex-col space-y-10 ml-2 font-medium">
          <h1 className="text-2xl">Title</h1>
          <input type="text" placeholder="Saisissez votre titre..."  className="w-60 p-1 mb-4 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-3" />
+         <button className="bg-blu">Ajouter</button>
       <p>membres</p>
       <h2 className="flex items-center font-bold"><BsListTask  className="mr-2"/>Description</h2>
       <input type="text" placeholder="Description de votre carte..." className="w-60 p-1 mb-4 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-3"/>
       <h2 className="flex items-center font-bold"><FaCommentAlt className=" mr-2" />Commentaires</h2>
       <input type="text" placeholder="Ecrivez votre commentaire..." className="w-60 p-1 mb-4 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-3"/>
      </div>
-    <div className="text-center">
+    <div className="text-center lg:w-9/12">
         <h2 className="text-center font-bold">Date echeance</h2>
         <div className="flex items-center rounded-md p-2">
             <input type="checkbox" className="mr-2" />

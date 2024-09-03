@@ -35,9 +35,19 @@ export const CalendarDashboard = () => {
       </button>
     </div>
   </header>
-  <Flex justify={"center"} align={"center"}>
-    <DatePicker size={"xl"} style={{width: "15%", height: "50%"}}/>
-  </Flex>
+ <Flex justify={"center"} align={"center"}>
+  <DatePicker style={{
+    transform: 'scale(2.5)',
+    transformOrigin: 'center',
+    position: 'absolute',
+    top: '35%',
+    left: '46%',
+    translateX: '-50%',
+    translateY: '-50%',
+    backgroundColor: 'white',
+    opacity:'85%'
+  }} />
+</Flex>
 </div>
 </div>
     </>

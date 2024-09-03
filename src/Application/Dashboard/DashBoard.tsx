@@ -8,14 +8,32 @@ import { CiMenuKebab } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
 import { useState } from 'react';
 import { Testdnd } from "../Dashboard/Testdnd";
+import { FaXmark } from "react-icons/fa6";
 
 
 export const Dashboard = () => {
   const [isPublic, setIsPublic] = useState(true);
+   const [showDropdown, setShowDropdown] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   const handleClick = () => {
     setIsPublic(!isPublic);
   };
+
+    const handleButtonClick = () => {
+    setShowDropdown(true);
+  };
+
+  const handleAcceptClick = () => {
+    // Add the new list with the input value
+    console.log(`Adding new list: ${inputValue}`);
+    setShowDropdown(false);
+  };
+
+  const handleExitClick = () => {
+  setShowDropdown(false);
+};
+
     return(
         <>
   <div className="w-full h-screen bg-gradient-to-b to-blue-500 from-cyan-500 to-white">
@@ -74,11 +92,38 @@ export const Dashboard = () => {
           <Testdnd />
         </div>
         <div>
-      <button className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3">
-        <FaPlus /> Ajouter une liste
-      </button>
+              <button
+                      className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3"
+                      onClick={handleButtonClick}
+                    >
+                      <FaPlus /> Ajouter une liste
+                    </button>
+                    {showDropdown && (
+                      <div className="absolute bg-white rounded-md shadow-md p-4 mt-2">
+                        <input
+                          type="text"
+                          value={inputValue}
+                          onChange={(e) => setInputValue(e.target.value)}
+                          className="w-full p-2 pl-10 text-sm text-gray-700"
+                          placeholder="Saissisez votre liste..."
+                        />
+                        <div className="flex justify-between">
+                            <button
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+                                onClick={handleAcceptClick}
+                              >
+                              Accept
+                </button>
+                      <button
+                          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2"
+                          onClick={handleExitClick}
+                        >
+                          <FaXmark />
+                      </button>
+                 </div>
+              </div>
+            )}
         </div>
-      
     </div>
     <NavLink to={"/testdnd"}>
       <button>test dnd</button>

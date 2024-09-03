@@ -93,15 +93,15 @@ export const router = createBrowserRouter([
         element: <CreatedBoard/>
     },
     {
-        path: "/arhivecarte",
+        path: "/archivecarte",
         element: <ArchivedCard/>
     },
     {
-        path: "/arhiveliste",
+        path: "/archiveliste",
         element: <ArchivedList/>
     },
     {
-        path: "/arhivetableau",
+        path: "/archivetableau",
         element: <ArchivedBoard/>
     },
     {

@@ -9,7 +9,7 @@ export const Plus = () => {
         <>
         <div className="h-screen w-full flex flex-col justify-center items-center">
         <h1 className="font-medium text-2xl">Plus</h1>
-          <NavLink to={"/arhivecarte"}>
+          <NavLink to={"/archivecarte"}>
         <button>
           <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
             <GiCardAceSpades  className="mr-2"/> Carte Archivée
@@ -17,7 +17,7 @@ export const Plus = () => {
         </button>
           </NavLink>
       <p className="text-lg text-gray-600">Les cartes archivées</p>
-      <NavLink to={"/arhiveliste"}>
+      <NavLink to={"/archiveliste"}>
         <button>
         <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
         <CiViewList  className="mr2"/> Liste Archivée
@@ -25,7 +25,7 @@ export const Plus = () => {
       </button>
       </NavLink>
       <p className="text-lg text-gray-600">Les listes archivées</p>
-      <NavLink to={"/arhivetableau"}>
+      <NavLink to={"/archivetableau"}>
         <button>
         <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
         <BsTable  className="mr-2"/> Tableaux
