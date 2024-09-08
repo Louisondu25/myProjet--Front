@@ -16,28 +16,28 @@ export const Connect = () => {
     setPassword(e.target.value);
   };
 
-    const handleSubmit = async () => {
-    if (!username || !password) {
-      alert('Veuillez remplir tous les champs obligatoires');
+const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  event.preventDefault();
+
+  if (!username || !password) {
+    alert('Veuillez remplir tous les champs requis');
+    return;
+  }
+
+  try {
+    const response = await http.post('/login', { email: username, password });
+
+    if (response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      window.location.href = '/giversdashboard';
     } else {
-      try {
-        const response = await http.post('/login', {
-          username,
-          password,
-        });
-console.log( response)
-        if (response.data) {
-          // Navigate to giversdashboard page
-          window.location.href = '/giversdashboard';
-        } else {
-          alert('Email ou mot de passe incorrect');
-        }
-      } catch (error) {
-        console.error(error);
-        alert('Erreur de connexion');
-      }
+      alert('Erreur de connexion');
     }
-  };
+  } catch (error) {
+    console.error(error);
+    alert('Erreur de connexion');
+  }
+};
 
   return (
     <div className="flex flex-col justify-center items-center h-screen">
@@ -47,12 +47,12 @@ console.log( response)
       </div>
       <p className="text-center">Connectez-vous pour Continuer:</p>
       <input
-        type="username"
-        placeholder="Saisissez votre adresse email"
-        value={username}
-        onChange={handleUserNameChange}
-        className="w-60 p-1 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-6"
-      />
+          type="email"
+          placeholder="Saisissez votre Email"
+          value={username}
+          onChange={handleUserNameChange}
+          className="w-60 p-1 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-6"
+        />
       <div className="flex items-center">
         <input
           type="password"

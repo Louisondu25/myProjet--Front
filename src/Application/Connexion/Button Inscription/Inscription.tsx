@@ -40,7 +40,7 @@ export const Register = () => {
           <p className="text-center">Inscrivez-vous pour Continuer:</p>
           <input
             type="email"
-            placeholder="Saisissez votre adresse email"
+            placeholder="Saisissez votre Pseudo"
             value={email}
             onChange={handleEmailChange}
             className="w-60 p-1 mb-4 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-6"
