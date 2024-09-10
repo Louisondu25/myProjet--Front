@@ -11,6 +11,7 @@ export const http = axios.create({
 // Intercepteur pour ajouter le token à chaque requête si disponible
 http.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');  // Récupérer le token depuis localStorage
+  console.log('Token:', token);
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;  // Ajouter le token dans l'en-tête Authorization

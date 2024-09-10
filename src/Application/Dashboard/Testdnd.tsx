@@ -39,7 +39,11 @@ export const Testdnd = () => {
         setFinishedTasks(finishedTasks);
         setArchivedTasks(archivedTasks);
           } catch (error) {
-            console.error('Erreur lors de la récupération des tâches:', error);
+            if (error instanceof Error) {
+              console.error('Erreur lors de la mise à jour de la tâche:', error.message);
+            } else {
+              console.error('Erreur inconnue lors de la mise à jour de la tâche:', error);
+            }
           }
         };
         fetchTasks(); // Appel de la fonction pour récupérer les tâches

@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 export const Card = () => {
   // Gestion des états pour les inputs
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [content, setContent] = useState('');
   const [comment, setComment] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [, setTasksToDo] = useState<string[]>([]);  // Gestion des tâches à faire
@@ -22,36 +22,27 @@ export const Card = () => {
      const navigate = useNavigate();
 
   // Fonction pour gérer l'ajout de la tâche
- const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
 
-   // Vérification que tous les champs sont remplis
-    if (!title || !description || !comment || !dueDate) {
-      alert('Veuillez remplir tous les champs.');
-      return;
-    }
+  // Vérification que tous les champs sont remplis
+  if (!title || !content || !comment || !dueDate) {
+    alert('Veuillez remplir tous les champs.');
+    return;
+  }
 
-  // Crée un objet task avec les informations saisies
-  const task = {
-    user_id: '66be46fa946f973dce9e7958', 
-    status: 'Finish',    
-    board_id: '66bb1c1b2bbcb76e3c7cacf4',     
-    category: 'Discussion',
-    content: 'blablapookie',            
-    title: 'Hello',
-    archive: true,
-  };
-
-   try {
+  try {
     // Envoi d'une requête POST vers l'API pour ajouter la tâche
-    const response = await http.post('/task', task);
+    const requestBody = { title, content, comment, dueDate };
+    console.log('Request Body:', requestBody);
+    const response = await http.post('/task', requestBody);
 
     console.log(response); // Affiche toute la réponse pour diagnostic
 
     // Si le statut est 201, la ressource a été créée avec succès
     if (response.status === 201) {
       console.log('Tâche ajoutée avec succès', response.data);
-      handleAddTask(task.title); // Ajoute la tâche à la liste
+      setTasksToDo((prevTasks) => [...prevTasks, title]);
       navigate('/dashboard'); // Redirection vers /dashboard
     } else {
       // Si le statut n'est pas celui attendu pour un succès
@@ -59,19 +50,9 @@ export const Card = () => {
       console.error('Détails de la réponse:', response.data);
     }
   } catch (error: unknown) {
-    if (error instanceof Error) {
-    console.error('Erreur lors de l\'ajout de la tâche:', error.message);
-  } else {
-    console.error('Erreur inattendue:', error);
-  }
+      console.error(error);
   }
 };
-
-  // Fonction pour mettre à jour l'état des tâches à faire
-  const handleAddTask = (task: string) => {
-    console.log(`Tâche ajoutée: ${task}`);
-    setTasksToDo((prevTasks: string[]) => [...prevTasks, task]);
-  };
 
   return (
     <>
@@ -86,7 +67,6 @@ export const Card = () => {
       <div className="flex gap-2">
         <div className="flex flex-col space-y-10 ml-2 font-medium">
           <h1 className="text-2xl">Title</h1>
-
           {/* Formulaire pour ajouter une nouvelle tâche */}
           <form onSubmit={handleSubmit}>
             <input
@@ -98,15 +78,14 @@ export const Card = () => {
             />
               <button type="submit" className="bg-blue-400 text-white ml-2 px-3 rounded-sm">Ajouter</button>
 
-            <h2 className="flex items-center font-bold mt-14"><BsListTask className="mr-2"/>Description</h2>
+            <h2 className="flex items-center font-bold mt-14"><BsListTask className="mr-2"/>Content</h2>
             <input
               type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="Description de votre carte..."
               className="w-60 p-1 mb-4 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-3"
             />
-
             <h2 className="flex items-center font-bold mt-14"><FaCommentAlt className=" mr-2" />Commentaires</h2>
             <input
               type="text"
