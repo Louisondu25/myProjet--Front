@@ -97,7 +97,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
           </form>
         </div>
 
-        <div className="text-center lg:w-8/12">
+        <div className="text-center lg:w-7/12">
           <h2 className="text-center font-bold">Date échéance</h2>
           <div className="flex items-center rounded-md p-2">
             <input

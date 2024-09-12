@@ -22,6 +22,7 @@ import { Settingcalendar } from "../Application/Dashboard/Menu/Plus/SettingCalen
 import { Theme } from "../Application/Dashboard/Menu/Plus/Theme.tsx";
 import { Astuce } from "../Application/Dashboard/Menu/Plus/Astuce.tsx";
 import { Card } from "../Application/Dashboard/Card.tsx";
+import { FirstCreateBoard } from "../Application/Connexion/Guide Interactif/CreationDeTableau.tsx";
 
 
 
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
     {
         path: "/recoverylink",
         element: <Sendrecoverylink/>
+    },
+    {
+        path: "/premierecreationtableaux",
+        element: <FirstCreateBoard/>
     },
     {
         path: "/giversdashboard",
