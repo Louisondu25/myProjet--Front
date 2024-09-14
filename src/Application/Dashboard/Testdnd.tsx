@@ -25,15 +25,15 @@ export const Testdnd = () => {
             const response = await http.get('/task');
             console.log('Response from server:', response);
             const tasks = Array.isArray(response.data) ? response.data : [];
-            console.log('Tasks fetched from server:', tasks); // Vérifiez les tâches récupérées
+            //console.log('Tasks fetched from server:', tasks); // Vérifiez les tâches récupérées
             setTasksToDo(tasks.filter(task => task.status === 'todo'));
             setFinishedTasks(tasks.filter(task => task.status === 'finished'));
             setArchivedTasks(tasks.filter(task => task.status === 'archived'));
 
 
-             console.log('Filtered Tasks to Do:', todoTasks); // Vérifiez les tâches filtrées pour 'todo'
-        console.log('Filtered Finished Tasks:', finishedTasks);
-        console.log('Filtered Archived Tasks:', archivedTasks);
+        //console.log('Filtered Tasks to Do:', todoTasks); // Vérifiez les tâches filtrées pour 'todo'
+        //console.log('Filtered Finished Tasks:', finishedTasks);
+        //console.log('Filtered Archived Tasks:', archivedTasks);
         
         setTasksToDo(todoTasks);
         setFinishedTasks(finishedTasks);
@@ -48,7 +48,6 @@ export const Testdnd = () => {
         };
         fetchTasks(); // Appel de la fonction pour récupérer les tâches
       }, []); // Dépendances vides pour que le useEffect se déclenche au montage du composant
-      console.log('Tasks to Do state:', tasksToDo);
 
   const handleDragStart = (task: Task, e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('task', JSON.stringify(task));

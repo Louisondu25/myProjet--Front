@@ -10,6 +10,7 @@ export const FirstCreateBoard = () => {
   const [content, setContent] = useState('');
   const [status, setStatus] = useState('');
 
+
   const navigate = useNavigate();
 
   // Fonction pour gérer la création du tableau
@@ -24,7 +25,7 @@ export const FirstCreateBoard = () => {
 
     try {
       // Envoi d'une requête POST vers l'API pour créer le tableau
-      const requestBody = { title, content, status };
+      const requestBody = { title, content, status, user_id:'66be46fa946f973dce9e7958'};
       console.log('Request Body:', requestBody);
       const response = await http.post('/board', requestBody);
 
