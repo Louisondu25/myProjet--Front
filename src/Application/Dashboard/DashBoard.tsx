@@ -6,16 +6,54 @@ import { MdAccountCircle } from "react-icons/md";
 import { FaCalendarDays } from "react-icons/fa6";
 import { CiMenuKebab } from "react-icons/ci";
 import { FaPlus } from "react-icons/fa6";
-import { useState } from 'react';
 import { Testdnd } from "../Dashboard/Testdnd";
 import { FaXmark } from "react-icons/fa6";
 import { http } from '../../Infrastructure/Http/axios'; // Assurez-vous que http est bien configuré
+import { useState, useEffect  } from 'react';
+
+interface List {
+  id: string;
+  title: string;
+}
 
 export const Dashboard = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [, setInputValue] = useState('');
   const [title, setTitle] = useState('');
+const [lists, setLists] = useState<List[]>([]);
+console.log("Initial lists state:", lists);
+
+const fetchLists = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await http.get('/listes', {
+      headers: {
+        'Authorization': `Bearer ${token}`, 
+      },
+    });
+
+    // Validate the response data
+    if (!Array.isArray(response.data)) {
+      console.error('API response is not an array:', response.data);
+      return []; // Or handle the error differently
+    }
+
+    const lists = response.data;
+    return lists;
+  } catch (error) {
+    console.error('Error fetching lists:', error);
+    return []; // Or handle the error differently
+  }
+};
+
+ useEffect(() => {
+  fetchLists().then((lists) => {
+    console.log("Received lists:", lists);
+    setLists(lists);
+    console.log("Updated lists state:", lists);
+  });
+}, []);
 
   const handleClick = () => {
     setIsPublic(!isPublic);
@@ -148,6 +186,11 @@ export const Dashboard = () => {
         <NavLink to={"/testdnd"}>
           <button>test dnd</button>
         </NavLink>
+      </div>
+      <div>
+        {lists && lists.map((list) => (
+          <div key={list.id}>{list.title}</div>
+        ))}
       </div>
     </>
   );

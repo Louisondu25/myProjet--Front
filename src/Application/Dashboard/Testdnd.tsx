@@ -23,7 +23,7 @@ export const Testdnd = () => {
         const fetchTasks = async () => {
           try {
             const response = await http.get('/task');
-            console.log('Response from server:', response);
+            //console.log('Response from server:', response);
             const tasks = Array.isArray(response.data) ? response.data : [];
             //console.log('Tasks fetched from server:', tasks); // Vérifiez les tâches récupérées
             setTasksToDo(tasks.filter(task => task.status === 'todo'));
