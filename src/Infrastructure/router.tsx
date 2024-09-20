@@ -23,6 +23,7 @@ import { Theme } from "../Application/Dashboard/Menu/Plus/Theme.tsx";
 import { Astuce } from "../Application/Dashboard/Menu/Plus/Astuce.tsx";
 import { Card } from "../Application/Dashboard/Card.tsx";
 import { FirstCreateBoard } from "../Application/Connexion/Guide Interactif/CreationDeTableau.tsx";
+import { TestRequest } from "../Application/Dashboard/test.tsx";
 
 
 
@@ -124,5 +125,9 @@ export const router = createBrowserRouter([
     {
         path: "/carte",
         element: <Card/>
+    },
+    {
+        path: "/testrequest", // a jeter quand les test seront terminés.
+        element: <TestRequest/>
     },
 ])
