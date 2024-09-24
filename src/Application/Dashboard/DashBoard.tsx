@@ -1,21 +1,22 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { TbInfoSquareRoundedFilled } from "react-icons/tb";
 import { IoIosNotifications } from "react-icons/io";
 import { MdAccountCircle } from "react-icons/md";
-import { FaCalendarDays } from "react-icons/fa6";
-import { CiMenuKebab } from "react-icons/ci";
-import { FaPlus } from "react-icons/fa6";
+import { FaCalendarDays, FaPlus } from "react-icons/fa6";
 import { Testdnd } from "../Dashboard/Testdnd";
 import { FaXmark } from "react-icons/fa6";
-import { http } from '../../Infrastructure/Http/axios'; // Assurez-vous que http est bien configuré
-import { useState, } from 'react';
+import { http } from '../../Infrastructure/Http/axios';
+import { useState, useEffect } from 'react';
+import { CiMenuKebab } from "react-icons/ci";
 
 export const Dashboard = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [, setInputValue] = useState('');
   const [title, setTitle] = useState('');
+  const location = useLocation();
+  const [lists, setLists] = useState<{ _id: string; title?: string; board_id: string }[]>([]);
+
 
   const handleClick = () => {
     setIsPublic(!isPublic);
@@ -25,28 +26,51 @@ export const Dashboard = () => {
     setShowDropdown(true);
   };
 
-  const handleAcceptClick = async () => {
-    if (!title) {
-      alert('Veuillez remplir tous les champs.');
-      return;
-    }
-
+  const fetchLists = async () => {
     try {
-      // Send a POST request to the API to create a new list
-      const requestBody = { title, board_id: '66e5981ee53acf69944d8d01', };
-      console.log('Request Body:', requestBody);
+      const response = await http.get(`/listes_by_filters`);
+      if (response.status !== 200) {
+        throw new Error(`Error fetching lists: ${response.status} ${response.statusText}`);
+      }
 
-      const response = await http.post('/liste', requestBody);
-      console.log(response); // Affiche toute la réponse pour diagnostic
-
-      const newListId = response.data;
-      console.log(`Created new list with ID: ${newListId}`);
-      setShowDropdown(false);
-      setInputValue('');
+      const data = response.data; // Assurez-vous que cela contient la bonne structure
+      setLists(data.results || []); // Ajustez selon la structure de votre réponse
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching lists:', error);
     }
   };
+
+useEffect(() => {
+  if (location.state && location.state.lists) {
+    console.log('Received lists:', location.state.lists);
+    setLists(location.state.lists);
+  } else {
+    fetchLists();
+  }
+}, [location.state]);
+
+const handleAcceptClick = async () => {
+  if (!title) {
+    alert('Veuillez remplir tous les champs.');
+    return;
+  }
+
+  try {
+    const requestBody = { title, board_id: '66e5981ee53acf69944d8d01' };
+    const response = await http.post('/liste', requestBody);
+
+    if (response.data && response.data._id) {
+      console.log(`Created new list with ID: ${response.data._id}`);
+      await fetchLists(); // Re-fetch all lists after creation
+      setShowDropdown(false);
+    } else {
+      console.error('Invalid response data');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const handleExitClick = () => {
     setShowDropdown(false);
@@ -55,8 +79,8 @@ export const Dashboard = () => {
   return (
     <>
       <div className="w-full h-screen bg-gradient-to-b to-blue-500 from-cyan-500 to-white">
-        <div className="bg-blue-800">
-          <header className="flex justify-between items-center">
+        <header className="bg-blue-800">
+          <div className="flex justify-between items-center">
             <div className="flex items-center ml-5 text-white">
               <img src="/Natural_Green_Interior_Design_Mood_Board_Photo_Collage_1 (2).svg" alt="Logo_Tree-low" width={60} />
               <h1>Tree Low</h1>
@@ -82,12 +106,10 @@ export const Dashboard = () => {
                 <MdAccountCircle />
               </button>
             </div>
-          </header>
-        </div>
+          </div>
+        </header>
         <div className="flex justify-between items-center">
-          <label className="outline outline-1 outline-slate-400 px-3 ml-2 rounded-sm">
-            Tableau
-          </label>
+          <label className="outline outline-1 outline-slate-400 px-3 ml-2 rounded-sm">Tableau</label>
           <p>Team Board</p>
           <NavLink to={"/membres"}>
             <button className="flex justify-center items-center bg-blue-200 rounded-sm px-2 mt-3 font-medium mr-24">
@@ -143,15 +165,27 @@ export const Dashboard = () => {
                 </div>
               </div>
             )}
+            <div>
+              <h1>Dashboard</h1>
+              {lists.length > 0 ? (
+                <ul>
+                  {lists.map((list) => (
+                    <li key={list._id}>{list.title}</li>  // Utiliser '_id' comme clé unique
+                  ))}
+                </ul>
+              ) : (
+                <p>Aucune liste disponible</p>
+              )}
+            </div>
           </div>
         </div>
         <NavLink to={"/testdnd"}>
           <button>test dnd</button>
         </NavLink>
-      </div>
-      <NavLink to={"/testrequest"}>
+        <NavLink to={"/testrequest"}>
           <button>test request</button>
         </NavLink>
+      </div>
     </>
   );
 };
