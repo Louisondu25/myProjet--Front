@@ -4,58 +4,85 @@ import { useState } from 'react';
 
 export const Giversdashboard = () => {
   const [, setFilteredLists] = useState([]);
+
   const navigate = useNavigate();
 
   const pageSize = 20;
   const currentPage = 1;
 
-  const handleFinish = async (boardId: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      
-      if (!token) {
-        console.error("No token found, please log in again.");
-        return;
-      }
+const handleFinish = async (boardId: string) => {
+  try {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error("No token found, please log in again.");
+      return;
+    }
 
-      const response = await http.get(`/board/${boardId}`, {
+    const response = await http.get(`/board/${boardId}`, {
+      headers: {
+        'Authorization': 'Bearer ' + token,
+      },
+    });
+
+    if (response.status >= 200 && response.status < 300) {
+      const listsResponse = await http.get(`/listes_by_filters`, {
         headers: {
           'Authorization': 'Bearer ' + token,
         },
+        params: {
+          limit: pageSize,
+          page: currentPage,
+        },
       });
 
-      if (response.status >= 200 && response.status < 300) {
-        const listsResponse = await http.get(`/listes_by_filters`, {
-          headers: {
-            'Authorization': 'Bearer ' + token,
-          },
-          params: {
-            limit: pageSize,
-            page: currentPage,
-          },
-        });
+      if (listsResponse.status >= 200 && listsResponse.status < 300) {
+        const listsData = listsResponse.data;
+        if (listsData && listsData.results && Array.isArray(listsData.results)) {
+          const filteredLists = listsData.results.filter((list: { board_id: string }) => list.board_id === boardId);
 
-        if (listsResponse.status >= 200 && listsResponse.status < 300) {
-          const listsData = listsResponse.data;
+          const filteredCards = await Promise.all(filteredLists.map(async (list: { category_id: string }) => {
+            const cardsResponse = await http.get(`/tasks_by_filters`, {
+              headers: {
+                'Authorization': 'Bearer ' + token,
+              },
+              params: {
+                limit: pageSize,
+                page: currentPage,
+                list_id: list.category_id,
+              },
+            });
 
-          if (listsData && listsData.results && Array.isArray(listsData.results)) {
-            const filtered = listsData.results.filter((list: { board_id: string }) => list.board_id === boardId);
-            setFilteredLists(filtered);
-            // Redirection vers dashboard avec state
-            navigate('/dashboard', { state: { lists: filtered } });
-          } else {
-            console.log('Invalid listsData:', listsData);
-          }
+            if (cardsResponse.status >= 200 && cardsResponse.status < 300) {
+              const cardsData = cardsResponse.data;
+              if (cardsData && cardsData.results && Array.isArray(cardsData.results)) {
+                return cardsData.results;
+              } else {
+                console.log('Invalid cardsData:', cardsData);
+                return [];
+              }
+            } else {
+              throw new Error(`Error fetching cards data for list ${list.category_id}: ${cardsResponse.status}`);
+            }
+          }));
+
+          setFilteredLists(filteredLists);
+
+          // Redirection vers dashboard avec state
+          navigate('/dashboard', { state: { lists: filteredLists, cards: filteredCards.flat() } });
         } else {
-          throw new Error(`Error fetching lists data: ${listsResponse.status}`);
+          console.log('Invalid listsData:', listsData);
         }
       } else {
-        throw new Error(`Error fetching board data: ${response.status}`);
+        throw new Error(`Error fetching lists data: ${listsResponse.status}`);
       }
-    } catch (error) {
-      console.error("Error during board or lists fetch:", error);
+    } else {
+      throw new Error(`Error fetching board data: ${response.status}`);
     }
-  };
+  } catch (error) {
+    console.error("Error during board or lists fetch:", error);
+  }
+};
 
   const handleFinishClick = async (boardId: string) => {
     await handleFinish(boardId);
