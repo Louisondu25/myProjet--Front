@@ -196,27 +196,26 @@ useEffect(() => {
           <div>
             <div className="flex">
               {lists.length > 0 ? (
-                <ul className="mt-2 flex gap-2">
-                  {lists.map((list, index) => (
-                    <li key={index} className={['bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md'][index % 5]}>
-                      <div className="card">
-                        <h2 className="card-title">{list.title}</h2>
-                        {list.tasks && (
-                          <ul className="card-tasks">
-                            {list.tasks.map((task) => (
-                              <li key={task._id} className="card-task">
-                                <p>{task.title}</p>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>Aucune liste disponible</p>
-              )}
+                    <ul className="mt-2 flex gap-2">
+                      {lists.map((list, index) => (
+                        <li key={index} className={['bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md'][index % 5]}>
+                          <div className="card">
+                            <h2 className="card-title">{list.title}</h2>
+                            <ul className="card-tasks">
+                              {filteredCards.filter((card) => card.category_id === list._id).map((card) => (
+                                <li key={card._id} className="card-task">
+                                  <p>{card.title}</p>
+                                  <p>{card.content}</p>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>Aucune liste disponible</p>
+                  )}
               <div>
                 <button
                 className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3"
@@ -260,7 +259,7 @@ useEffect(() => {
           <button>test request</button>
         </NavLink>
       </div>
-      <div>
+      {/* <div>
         {filteredCards.length > 0 ? (
         <ul>
           {filteredCards.map((card) => (
@@ -274,7 +273,7 @@ useEffect(() => {
       ) : (
         <p>No cards available</p>
       )}
-      </div>
+      </div> */}
     </>
   );
 };
