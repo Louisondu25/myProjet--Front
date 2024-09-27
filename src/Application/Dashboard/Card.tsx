@@ -33,7 +33,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 
   try {
     // Envoi d'une requête POST vers l'API pour ajouter la tâche
-    const requestBody = { title, content, comment, dueDate, category_id: '66e5a001e53acf69944d8d0f', };
+    const requestBody = { title, content, comment, dueDate, category_id: '66e5a9c3ffef7e7a5d70c8e8', };
     console.log('Request Body:', requestBody);
     const response = await http.post('/task', requestBody);
 

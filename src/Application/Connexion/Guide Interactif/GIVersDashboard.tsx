@@ -1,9 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import { http } from '../../../Infrastructure/Http/axios';
-import { useState } from 'react';
 
 export const Giversdashboard = () => {
-  const [, setFilteredLists] = useState([]);
 
   const navigate = useNavigate();
 
@@ -41,35 +39,39 @@ const handleFinish = async (boardId: string) => {
         if (listsData && listsData.results && Array.isArray(listsData.results)) {
           const filteredLists = listsData.results.filter((list: { board_id: string }) => list.board_id === boardId);
 
-          const filteredCards = await Promise.all(filteredLists.map(async (list: { category_id: string }) => {
-            const cardsResponse = await http.get(`/tasks_by_filters`, {
-              headers: {
-                'Authorization': 'Bearer ' + token,
-              },
-              params: {
-                limit: pageSize,
-                page: currentPage,
-                list_id: list.category_id,
-              },
-            });
+          const cardsResponse = await http.get(`/tasks_by_filters`, {
+            headers: {
+              'Authorization': 'Bearer ' + token,
+            },
+            params: {
+              limit: pageSize,
+              page: currentPage,
+            },
+          });
 
-            if (cardsResponse.status >= 200 && cardsResponse.status < 300) {
-              const cardsData = cardsResponse.data;
-              if (cardsData && cardsData.results && Array.isArray(cardsData.results)) {
-                return cardsData.results;
-              } else {
-                console.log('Invalid cardsData:', cardsData);
-                return [];
-              }
+          if (cardsResponse.status >= 200 && cardsResponse.status < 300) {
+            const cardsData = cardsResponse.data;
+            if (cardsData && cardsData.results && Array.isArray(cardsData.results)) {
+              const cards = cardsData.results;
+              console.log('Cards data:', cards); 
+              console.log('Lists data:', filteredLists); 
+
+              // Filter cards based on list IDs
+              const filteredCards = cards.filter((card: { category_id: string }) => {
+                return filteredLists.some((list: { _id: string }) => list._id === card.category_id);
+              });
+
+              console.log('Filtered cards:', filteredCards); 
+              const cardsToPass = filteredCards; 
+              navigate('/dashboard', { state: { lists: filteredLists, cards: cardsToPass } });
+              return cardsToPass;
             } else {
-              throw new Error(`Error fetching cards data for list ${list.category_id}: ${cardsResponse.status}`);
+              console.log('Invalid cardsData:', cardsData);
+              return [];
             }
-          }));
-
-          setFilteredLists(filteredLists);
-
-          // Redirection vers dashboard avec state
-          navigate('/dashboard', { state: { lists: filteredLists, cards: filteredCards.flat() } });
+          } else {
+            throw new Error(`Error fetching cards data: ${cardsResponse.status}`);
+          }
         } else {
           console.log('Invalid listsData:', listsData);
         }

@@ -20,11 +20,14 @@ interface List {
 interface Task {
   _id: string;
   title: string;
+  content: string,
+  category_id: string;
 }
 
 interface Card {
   _id: string;
   title: string;
+  content: string,
   category_id: string;
 }
 
@@ -35,6 +38,7 @@ export const Dashboard = () => {
   const location = useLocation();
   const [lists, setLists] = useState<List[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
+  const [fetchingCards, setFetchingCards] = useState(false);
   const [filteredCards, setFilteredCards] = useState<Card[]>([]);
 
   const handleClick = () => {
@@ -69,13 +73,17 @@ const fetchCards = async () => {
 
     const data = response.data; 
     const newCards = data.results || []; 
+    console.log('Fetched cards:', newCards); // Add this line
     setCards(newCards); 
   } catch (error) {
     console.error('Error fetching cards:', error);
+  } finally {
+    setFetchingCards(false);
   }
 };
 
 useEffect(() => {
+  console.log('Location state:', location.state);
   if (location.state && location.state.lists) {
     console.log('Received lists:', location.state.lists);
     setLists(location.state.lists);
@@ -83,19 +91,24 @@ useEffect(() => {
     fetchLists();
   }
   if (location.state && location.state.cards) {
-    console.log('Received cards from location.state:', location.state.cards);
-    console.log('Setting cards state...');
     setCards(location.state.cards);
-    console.log('Cards state updated:', location.state.cards);
-  } else {
+  } else if (cards.length === 0 && !fetchingCards) {
     fetchCards();
   }
-  // Filter cards by list ID
-  const listId = '66e5a001e53acf69944d8d0f';
-  const filteredCards = cards.filter((card) => card.category_id === listId);
-  console.log('Filtered cards:', filteredCards);
-  setFilteredCards(filteredCards);
-}, [cards]);
+
+  function filterCardsByListIds(cards: Card[], lists: List[]) {
+    return cards.filter((card) => {
+      return lists.some((list) => list._id === card.category_id);
+    });
+  }
+
+  // Filter cards by list IDs
+  if (lists.length > 0 && cards.length > 0) {
+    const filteredCards = filterCardsByListIds(cards, lists);
+    console.log('Filtered cards:', filteredCards);
+    setFilteredCards(filteredCards);
+  }
+}, [location.state, cards, lists, fetchingCards]);
 
   const handleAcceptClick = async () => {
     if (!title) {
@@ -204,14 +217,14 @@ useEffect(() => {
               ) : (
                 <p>Aucune liste disponible</p>
               )}
-              <button
+              <div>
+                <button
                 className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3"
                 onClick={handleButtonClick}
               >
                 <FaPlus /> Ajouter une liste
               </button>
-            </div>
-            {showDropdown && (
+              {showDropdown && (
               <div className="absolute bg-white rounded-md shadow-md p-4 mt-2">
                 <input
                   type="text"
@@ -236,6 +249,8 @@ useEffect(() => {
                 </div>
               </div>
             )}
+              </div>
+            </div>
           </div>
         </div>
         <NavLink to={"/testdnd"}>
@@ -249,7 +264,11 @@ useEffect(() => {
         {filteredCards.length > 0 ? (
         <ul>
           {filteredCards.map((card) => (
-            <li key={card._id}>{card.title}</li>
+            <li key={card._id} className="">
+              {card.title}
+              {card.content}
+              {card.category_id}
+            </li>
           ))}
         </ul>
       ) : (
