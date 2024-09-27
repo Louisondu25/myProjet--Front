@@ -198,12 +198,12 @@ useEffect(() => {
               {lists.length > 0 ? (
                     <ul className="mt-2 flex gap-2">
                       {lists.map((list, index) => (
-                        <li key={index} className={['bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md','bg-gray-400 px-9 rounded-md'][index % 5]}>
+                        <li key={index} className='bg-gray-400 px-9 rounded-md'>
                           <div className="card">
                             <h2 className="card-title">{list.title}</h2>
                             <ul className="card-tasks">
                               {filteredCards.filter((card) => card.category_id === list._id).map((card) => (
-                                <li key={card._id} className="card-task">
+                                <li key={card._id} className="card-task bg-white px-5 rounded-md mt-1">
                                   <p>{card.title}</p>
                                   <p>{card.content}</p>
                                 </li>
