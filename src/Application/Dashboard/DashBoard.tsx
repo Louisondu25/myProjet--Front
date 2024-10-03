@@ -75,7 +75,6 @@
 
 // //     const data = response.data; 
 // //     const newCards = data.results || []; 
-// //     console.log('Fetched cards:', newCards); // Add this line
 // //     setCards(newCards); 
 // //   } catch (error) {
 // //     console.error('Error fetching cards:', error);
@@ -85,9 +84,7 @@
 // // };
 
 // // useEffect(() => {
-// //   console.log('Location state:', location.state);
 // //   if (location.state && location.state.lists) {
-// //     console.log('Received lists:', location.state.lists);
 // //     setLists(location.state.lists);
 // //   } else {
 // //     fetchLists();
@@ -107,7 +104,6 @@
 // //   // Filter cards by list IDs
 // //   if (lists.length > 0 && cards.length > 0) {
 // //     const filteredCards = filterCardsByListIds(cards, lists);
-// //     console.log('Filtered cards:', filteredCards);
 // //     setFilteredCards(filteredCards);
 // //   }
 // // }, [location.state, cards, lists, fetchingCards]);
@@ -123,7 +119,6 @@
 // //       const response = await http.post('/liste', requestBody);
 
 // //       if (response.data && response.data._id) {
-// //         console.log(`Created new list with ID: ${response.data._id}`);
 // //         setLists([...lists, response.data]); 
 // //         setShowDropdown(false);
 // //       } else {
@@ -338,19 +333,23 @@ export const Dashboard = () => {
     setShowDropdown(true);
   };
 
-  const fetchLists = async () => {
-    try {
-      const response = await http.get(`/listes_by_filters`);
-      if (response.status !== 200) {
-        throw new Error(`Error fetching lists: ${response.status} ${response.statusText}`);
-      }
-      const data = response.data;
-      const newLists = data.results || [];
-      setLists((prevLists) => [...prevLists, ...newLists]);
-    } catch (error) {
-      console.error('Error fetching lists:', error);
+const fetchLists = async () => {
+  try {
+    const response = await http.get(`/listes_by_filters`);
+    if (response.status !== 200) {
+      throw new Error(`Error fetching lists: ${response.status} ${response.statusText}`);
     }
-  };
+
+    const data = response.data;
+    console.log('Récupération des listes du serveur :');
+    console.log('data :', data);
+    const newLists = data.results || [];
+    setLists(newLists);
+    localStorage.setItem('lists', JSON.stringify(newLists));
+  } catch (error) {
+    console.error('Error fetching lists:', error);
+  }
+};
 
 const fetchCards = async () => {
   try {
@@ -358,12 +357,13 @@ const fetchCards = async () => {
     if (response.status !== 200) {
       throw new Error(`Error fetching cards: ${response.status} ${response.statusText}`);
     }
+
     const data = response.data;
+    console.log('Récupération des cartes du serveur :');
+    console.log('data :', data);
     const newCards = data.results || [];
-    console.log('Fetched cards:', newCards);
     setCards(newCards);
-    const filteredCards = newCards.filter((card: Card) => lists.some((list) => list._id === card.category_id));
-    setFilteredCards(filteredCards);
+    localStorage.setItem('cards', JSON.stringify(newCards));
   } catch (error) {
     console.error('Error fetching cards:', error);
   } finally {
@@ -371,7 +371,30 @@ const fetchCards = async () => {
   }
 };
 
-const onDragEnd = (result: DropResult) => {
+useEffect(() => {
+  const storedCards = localStorage.getItem('cards');
+  const storedLists = localStorage.getItem('lists');
+  if (storedCards && storedLists) {
+    console.log('Récupération des données stockées dans le local storage :');
+    console.log('storedCards :', storedCards);
+    console.log('storedLists :', storedLists);
+    setCards(JSON.parse(storedCards));
+    setLists(JSON.parse(storedLists));
+    console.log('États mis à jour :');
+    console.log('lists :', lists);
+    console.log('cards :', cards);
+  } else {
+    fetchCards();
+    fetchLists();
+  }
+}, []);
+
+ // Update filteredCards state
+    function filterCardsByListIds(cards: Card[], lists: List[]) {
+      return cards.filter((card) => lists.some((list) => list._id === card.category_id));
+    }
+
+const onDragEnd = async (result: DropResult) => {
   const { destination, source } = result;
 
   // If the item was dropped outside of a droppable area, do nothing
@@ -384,86 +407,90 @@ const onDragEnd = (result: DropResult) => {
     return;
   }
 
-  // Get the task that was dragged
-  const task = cards.find((card) => card._id === result.draggableId);
+  // Get the card that was dragged
+  const card = cards.find((card) => card._id === result.draggableId);
 
-  // If the task is not found, do nothing
-  if (!task) {
-    console.error("Task not found");
+  // If the card is not found, do nothing
+  if (!card) {
+    console.error("Card not found");
     return;
   }
 
-  // Update the task's category_id if necessary
-  if (source.droppableId !== destination.droppableId) {
-    task.category_id = destination.droppableId;
-  }
+  // Update the card's category_id property
+  card.category_id = destination.droppableId;
 
-  // Update the cards state
-  setCards((prevCards) => {
-    const newCards = [...prevCards];
-    const taskIndex = newCards.findIndex((card) => card._id === task._id);
-    newCards[taskIndex] = task;
-    return newCards;
-  });
-
-  // Update the filteredCards state
-  const updatedLists = [...lists];
-  updatedLists.forEach((list) => {
-    list.tasks = cards.filter((card) => card.category_id === list._id);
-  });
-  setLists(updatedLists);
-  const filteredCards = cards.filter((card) => lists.some((list) => list._id === card.category_id));
-  setFilteredCards(filteredCards);
-};
-
-  useEffect(() => {
-    console.log('Location state:', location.state);
-    if (location.state && location.state.lists) {
-      console.log('Received lists:', location.state.lists);
-      setLists(location.state.lists);
-    } else {
-      fetchLists();
-    }
-    if (location.state && location.state.cards) {
-      setCards(location.state.cards);
-    } else if (cards.length === 0 && !fetchingCards) {
-      fetchCards();
+  // Send a request to the server to update the card's category_id property
+  try {
+    const response = await http.put(`/task/${card._id}`, { category_id: card.category_id });
+    console.log('Mise à jour de la carte sur le serveur :');
+    console.log('response :', response);
+    if (response.status !== 200) {
+      throw new Error(`Error updating card: ${response.status} ${response.statusText}`);
     }
 
-    function filterCardsByListIds(cards: Card[], lists: List[]) {
-      return cards.filter((card) => lists.some((list) => list._id === card.category_id));
-    }
+    // Update local storage
+    const updatedCards = cards.map((c) => c._id === card._id ? card : c);
+    setCards(updatedCards);
+    localStorage.setItem('cards', JSON.stringify(updatedCards));
 
-    if (lists.length > 0 && cards.length > 0) {
-      const filteredCards = filterCardsByListIds(cards, lists);
-      console.log('Filtered cards:', filteredCards);
+    if (lists.length > 0 && updatedCards.length > 0) {
+      const filteredCards = filterCardsByListIds(updatedCards, lists);
       setFilteredCards(filteredCards);
     }
-    console.log("Lists au chargement ou mise à jour :", lists);
-  }, [location.state, cards, lists, fetchingCards]);
+  } catch (error) {
+    console.error('Error updating card:', error);
+  }
+};
 
-  const handleAcceptClick = async () => {
-    if (!title) {
-      alert('Veuillez remplir tous les champs.');
-      return;
-    }
+useEffect(() => {
+  if (location.state && location.state.lists) {
+    setLists(location.state.lists);
+  } else {
+    fetchLists();
+  }
+  if (location.state && location.state.cards) {
+    setCards(location.state.cards);
+  } else if (cards.length === 0 && !fetchingCards) {
+    fetchCards();
+  }
 
-    try {
-      const requestBody = { title, board_id: '66e5981ee53acf69944d8d01' };
-      const response = await http.post('/liste', requestBody);
+  function filterCardsByListIds(cards: Card[], lists: List[]) {
+    return cards.filter((card) => lists.some((list) => list._id === card.category_id));
+  }
 
-      if (response.data && response.data._id) {
-        console.log(`Created new list with ID: ${response.data._id}`);
-        setLists([...lists, response.data]);
-        setShowDropdown(false);
-      } else {
-        console.error('Invalid response data');
+  if (lists.length > 0 && cards.length > 0) {
+    const filteredCards = filterCardsByListIds(cards, lists);
+    setFilteredCards(filteredCards);
+  }
+}, [location.state, cards, lists, fetchingCards]);
+
+const handleAcceptClick = async () => {
+  if (!title) {
+    alert('Veuillez remplir tous les champs.');
+    return;
+  }
+
+  try {
+    const requestBody = { title, board_id: '66e5981ee53acf69944d8d01' };
+    const response = await http.post('/liste', requestBody);
+
+    if (response.data && response.data._id) {
+      const newLists = [...lists, response.data];
+      setLists(newLists);
+      localStorage.setItem('lists', JSON.stringify(newLists));
+      setShowDropdown(false);
+
+      if (newLists.length > 0 && cards.length > 0) {
+        const filteredCards = filterCardsByListIds(cards, newLists);
+        setFilteredCards(filteredCards);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      console.error('Invalid response data');
     }
-  };
-
+  } catch (error) {
+    console.error(error);
+  }
+};
   const handleExitClick = () => {
     setShowDropdown(false);
   };
