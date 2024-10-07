@@ -58,16 +58,13 @@ const handleFinish = async (boardId: string) => {
 
               // Filter cards based on list IDs
               const filteredCards = cards.filter((card: { category_id: string }) => {
-                return filteredLists.some((list: { _id: string }) => list._id === card.category_id);
-              });
+              return filteredLists.some((list: { _id: string }) => list._id === card.category_id);
+            });
 
               console.log('Filtered cards:', filteredCards); 
-              const cardsToPass = filteredCards; 
-              navigate('/dashboard', { state: { lists: filteredLists, cards: cardsToPass } });
-              return cardsToPass;
+              navigate('/dashboard', { state: { lists: filteredLists, cards: filteredCards } });
             } else {
               console.log('Invalid cardsData:', cardsData);
-              return [];
             }
           } else {
             throw new Error(`Error fetching cards data: ${cardsResponse.status}`);
