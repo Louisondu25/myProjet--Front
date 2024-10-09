@@ -12,3 +12,11 @@
   height: 100vh;
   width: 100vw;
 }
+
+.dropdown-profile {
+  right: 10px;
+}
+
+.dropdown-help {
+  right: 80px;
+}

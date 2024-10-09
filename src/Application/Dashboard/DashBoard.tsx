@@ -294,6 +294,9 @@ import { http } from '../../Infrastructure/Http/axios';
 import { CiMenuKebab } from "react-icons/ci";
 import { GiCardAceSpades } from "react-icons/gi";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import { FiLogOut } from "react-icons/fi";
+import { IoMdHelpCircleOutline } from "react-icons/io";
+import { IoIosMail } from "react-icons/io";
 
 interface List {
   _id: string;
@@ -325,6 +328,8 @@ export const Dashboard = () => {
   const [cards, setCards] = useState<Card[]>([]);
   const [fetchingCards, setFetchingCards] = useState(false);
   const [filteredCards, setFilteredCards] = useState<Card[]>([]);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showHelpDropdown, setShowHelpDropdown] = useState(false);
 
   const handleClick = () => {
     setIsPublic(!isPublic);
@@ -558,7 +563,6 @@ const handleAcceptClick = async () => {
     }
 };
 
-
   const handleExitClick = () => {
     setShowDropdown(false);
   };
@@ -583,9 +587,66 @@ const handleAcceptClick = async () => {
               <button className="bg-white rounded-md px-6 py-1 font-medium">Crée</button>
             </NavLink>
             <div className="text-xl flex space-x-4 mr-4 text-white">
-              <button><TbInfoSquareRoundedFilled /></button>
+              <button onClick={() => setShowHelpDropdown(!showHelpDropdown)}><TbInfoSquareRoundedFilled /></button>
+                {showHelpDropdown && (
+                  <div className="dropdown-help absolute bg-white rounded-md shadow-md p-4 mt-6 text-black border border-gray-500">
+                    <ul>
+                      <h1 className='mb-5 font-bold'>Astuces a Connaitre</h1>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 1:</span> Appuyer sur <strong>Ajouter une carte</strong> pour créer une carte.
+                      </li>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 2:</span> Appuyer sur <strong>le bouton dossier</strong> pour archiver vos cartes.
+                      </li>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 3:</span> Appuyer sur <strong>Ajouter une liste</strong> pour créer une liste.
+                      </li>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 4:</span> Appuyer sur <strong>le bouton public/privé</strong> pour mettre en public ou en privé.
+                      </li>
+                      <p className='mt-4 mb-4 font-bold'> Et d'autres astuces :</p>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 5:</span> Ajouter des personnes avec <strong>le bouton invite</strong>.
+                      </li>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 6:</span> Possibilité de <strong>créer</strong> d'autres tableaux.
+                      </li>
+                      <li>
+                        <span className="font-medium text-xl mb-2">Tip 7:</span> Rappel : vous pouvez mettre votre tableau en privé ou public.
+                      </li>
+                      <p className='mt-4 font-bold'>Et plein d'autres choses à découvrir.</p>
+                    </ul>
+                  </div>
+                )}
+
               <button><IoIosNotifications /></button>
-              <button><MdAccountCircle /></button>
+              <button onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
+                <MdAccountCircle />
+              </button>
+              {showProfileDropdown && (
+                <div className="dropdown-profile absolute bg-white rounded-md shadow-md p-4 mt-6 text-black border border-gray-500">
+                  <ul>
+                    <li className='mb-2'>
+                      <span className='font-medium text-xl'>Full Name: </span> Detenteur du tableau 1 Iencli
+                    </li>
+                    <li className='mb-2'>
+                      <span className='font-medium text-xl'>Pseudo: </span> BestIencli4ever
+                    </li>
+                    <li className='mb-2'>
+                      <span className='flex items-center'><span className='font-medium text-xl underline'><IoIosMail className='mr-2'/></span> Iencli@gmail.com</span>
+                    </li>
+                    <li className='mb-2'>
+                      <span className='flex items-center'><span className='font-medium text-xl underline'><MdAccountCircle /></span> <button className='ml-2'>Manage account</button></span>
+                    </li>
+                    <li className='mb-2'>
+                      <span className='flex items-center'><span className='font-medium text-xl underline'><IoMdHelpCircleOutline /></span> <button className='ml-2'>Help</button> </span>
+                    </li>
+                    <li>
+                     <span className='flex items-center'><span className='font-medium text-xl underline'><FiLogOut /></span> <button className='ml-2'>LogOut</button></span>
+                    </li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -664,7 +725,7 @@ const handleAcceptClick = async () => {
               className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3 mr-2"
               onClick={handleButtonClick}
             >
-              <FaPlus /> Add a list
+              <FaPlus /> Ajouter une liste
             </button>
             {showDropdown && (
               <div className="absolute bg-white rounded-md shadow-md p-4 mt-2">
