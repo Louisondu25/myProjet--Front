@@ -351,12 +351,13 @@ export const Dashboard = () => {
     }
   };
 
-  const fetchCards = async () => {
+const fetchCards = async () => {
   console.log('Fetching cards...');
   setFetchingCards(true);
   try {
     const cards: Card[] = [];
     for (const list of lists) {
+      console.log(`Fetching cards for list ${list._id}`);
       const response = await http.get(`/tasks_by_filters?list_id=${list._id}`);
       console.log('fetchCards response for list', list._id, ':', response);
       if (response.status !== 200) {
@@ -367,11 +368,11 @@ export const Dashboard = () => {
       console.log('Cards fetched for list', list._id, ':', newCards);
       cards.push(...newCards);
     }
+    console.log('All fetched cards:', cards);
 
     // Ne met à jour l'état que si de nouvelles cartes sont reçues
-    if (cards.length > 0 && cards.length !== cards.length) {
-      console.log('All fetched cards:', cards);
-      // Update the cards state with the correct category_id
+    if (cards.length > 0) {
+      console.log('Cards before updating state:', cards);
       const updatedCards = cards.map((card) => {
         const list = lists.find((list) => list._id === card.category_id);
         if (list) {
@@ -379,6 +380,7 @@ export const Dashboard = () => {
         }
         return card;
       });
+      console.log('Updated cards with correct category_id:', updatedCards);
       setCards(updatedCards);
     }
   } catch (error: any) {
@@ -391,23 +393,38 @@ export const Dashboard = () => {
 
 const filterCardsByListIds = (cards: Card[], lists: List[]) => {
   console.log('Filtering cards based on lists...');
-  return cards.filter((card) => {
+
+  // Affiche toutes les cartes avant le filtrage
+  console.log('All cards before filtering:', cards);
+
+  const filteredCards = cards.filter((card) => {
+    // Vérifie si le category_id de la carte correspond à une liste
     const match = lists.some((list) => list._id === card.category_id);
+
+    // Log de débogage pour chaque carte
     console.log(`Card ${card._id} has category_id ${card.category_id}. Match found: ${match}`);
+
     return match;
   });
+
+  // Affiche les cartes filtrées
+  console.log('Filtered cards:', filteredCards);
+
+  return filteredCards;
 };
 
 useEffect(() => {
   const initializeData = async () => {
     console.log('Initializing data...');
     if (location.state && location.state.lists) {
+      console.log('Received lists from location state:', location.state.lists);
       setLists(location.state.lists);
     } else {
       await fetchLists();
     }
 
     if (location.state && location.state.cards) {
+      console.log('Received cards from location state:', location.state.cards);
       setCards(location.state.cards);
     } else if (cards.length === 0 && !fetchingCards) {
       await fetchCards();
@@ -420,7 +437,12 @@ useEffect(() => {
     fetchLists();
     fetchCards();
   }
-}, [location.state, fetchingCards]);
+}, [location.state, fetchingCards, lists, cards]);
+
+useEffect(() => {
+  console.log('Lists state:', lists);
+  console.log('Cards state:', cards);
+}, [lists, cards]);
 
 useEffect(() => {
   if (lists.length > 0 && cards.length > 0 && filteredCards.length === 0) {
@@ -431,6 +453,7 @@ useEffect(() => {
 }, [cards, lists]);
 
 const onDragEnd = async (result: DropResult) => {
+  console.log('onDragEnd result:', result);
   const { destination, source } = result;
 
   // If the item was dropped outside of a droppable area, do nothing
@@ -445,6 +468,8 @@ const onDragEnd = async (result: DropResult) => {
 
   // Get the card that was dragged
   const card = cards.find((card) => card._id === result.draggableId);
+
+  console.log('Card being dragged:', card);
 
   // If the card is not found, do nothing
   if (!card) {
@@ -477,7 +502,13 @@ const onDragEnd = async (result: DropResult) => {
       }
       return c;
     });
+    console.log('Updated cards:', updatedCards);
     setCards(updatedCards);
+
+    // Update the filteredCards state
+    const updatedFilteredCards = filterCardsByListIds(updatedCards, updatedLists);
+    console.log('Updated filteredCards:', updatedFilteredCards);
+    setFilteredCards(updatedFilteredCards);
 
     // Send a request to the server to update the card's category_id property
     try {
@@ -496,30 +527,37 @@ const onDragEnd = async (result: DropResult) => {
   }
 };
 
-  const handleAcceptClick = async () => {
+const handleAcceptClick = async () => {
     if (!title) {
-      alert('Veuillez remplir tous les champs.');
-      return;
+        alert('Veuillez remplir tous les champs.');
+        return;
     }
 
     try {
-      const requestBody = { title, board_id: '66e5981ee53acf69944d8d01' };
-      const response = await http.post('/liste', requestBody);
+        const requestBody = { title, board_id: '66e5981ee53acf69944d8d01' };
+        const response = await http.post('/liste', requestBody);
 
-      if (response.data && response.data._id) {
-        const newLists = [...lists, response.data];
-        setLists(newLists);
-        setShowDropdown(false);
+        if (response.data && response.data._id) {
+            const newLists = [...lists, response.data];
+            setLists(newLists);
+            setShowDropdown(false);
 
-        // Fetch the updated cards from the server
-        await fetchCards(); // Assurez-vous que ce soit await pour éviter des appels simultanés
-      } else {
-        console.error('Invalid response data');
-      }
-    } catch (error) {
-      console.error(error);
+            // Fetch the updated cards from the server
+            await fetchCards(); // Assurez-vous que ce soit await pour éviter des appels simultanés
+        } else {
+            console.error('Invalid response data');
+        }
+    } catch (error: unknown) {  // Spécifier le type ici
+        if (error instanceof Error) {
+            console.error('Error while creating a new list:', error);
+            alert('Erreur lors de la création de la liste : ' + error.message);
+        } else {
+            console.error('Unexpected error:', error);
+            alert('Une erreur inattendue est survenue.');
+        }
     }
-  };
+};
+
 
   const handleExitClick = () => {
     setShowDropdown(false);
@@ -578,42 +616,42 @@ const onDragEnd = async (result: DropResult) => {
               {lists.length > 0 ? (
                 <ul className="mt-2 flex gap-2 ml-2">
                   {lists.map((list) => (
-                    <Droppable key={list._id} droppableId={list._id.toString()}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className="bg-gray-400 p-4 rounded-md shadow-md"
-                        >
-                          <h2 className="card-title">{list.title}</h2>
-                          <ul className="card-tasks">
-                            {filteredCards
-                              .filter((card) => card.category_id === list._id) // Filtrer par category_id
-                              .map((card, index) => (
-                                <Draggable key={card._id} draggableId={card._id.toString()} index={index}>
-                                  {(provided) => (
-                                    <li
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      className="card-task bg-white px-5 rounded-md mt-1"
-                                    >
-                                      <p>{card.title}</p>
-                                      <p>{card.content}</p>
-                                    </li>
-                                  )}
-                                </Draggable>
-                              ))}
-                          </ul>
-                          <NavLink to={"/carte"}>
-                            <button className="flex justify-center items-center bg-white rounded-sm  px-3 font-medium shadow-md hover:shadow-lg mt-2 mb-2">
-                              <GiCardAceSpades /> Ajouter une carte
-                            </button>
-                          </NavLink>
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
+                   <Droppable key={list._id} droppableId={list._id.toString()}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="bg-gray-400 p-4 rounded-md shadow-md"
+                      >
+                        <h2 className="card-title">{list.title}</h2>
+                        <ul className="card-tasks">
+                          {filteredCards
+                            .filter((card) => card.category_id === list._id) // Filtrer par category_id
+                            .map((card, index) => (
+                              <Draggable key={card._id} draggableId={card._id.toString()} index={index}>
+                                {(provided) => (
+                                  <li
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="card-task bg-white px-5 rounded-md mt-1"
+                                  >
+                                    <p>{card.title}</p>
+                                    <p>{card.content}</p>
+                                  </li>
+                                )}
+                              </Draggable>
+                            ))}        
+                        </ul>
+                        <NavLink to={"/carte"}>
+                          <button className="flex justify-center items-center bg-white rounded-sm  px-3 font-medium shadow-md hover:shadow-lg mt-2 mb-2">
+                            <GiCardAceSpades /> Ajouter une carte
+                          </button>
+                        </NavLink>
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
                   ))}
                 </ul>
               ) : (

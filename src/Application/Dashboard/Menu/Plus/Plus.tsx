@@ -11,7 +11,7 @@ export const Plus = () => {
         <h1 className="font-medium text-2xl">Plus</h1>
           <NavLink to={"/archivecarte"}>
         <button>
-          <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
+          <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-20">
             <GiCardAceSpades  className="mr-2"/> Carte Archivée
           </h2>
         </button>
@@ -19,7 +19,7 @@ export const Plus = () => {
       <p className="text-lg text-gray-600">Les cartes archivées</p>
       <NavLink to={"/archiveliste"}>
         <button>
-        <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
+        <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-20">
         <CiViewList  className="mr2"/> Liste Archivée
       </h2>
       </button>
@@ -27,7 +27,7 @@ export const Plus = () => {
       <p className="text-lg text-gray-600">Les listes archivées</p>
       <NavLink to={"/archivetableau"}>
         <button>
-        <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
+        <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-20">
         <BsTable  className="mr-2"/> Tableaux
       </h2>
       </button>
@@ -36,7 +36,7 @@ export const Plus = () => {
 
       <NavLink to={"/settingcalendar"}>
         <button>
-        <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-28">
+        <h2 className=" text-xl flex justify-center items-center px-2 font-medium mt-20">
         <FaCalendarAlt  className="mr-2"/> Calendrier
       </h2>
       </button>

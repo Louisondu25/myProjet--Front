@@ -28,7 +28,10 @@ export const ChangeBackground = () => {
             </div>
             </div>
                 <h2 className="text-center mb-4 text-2xl font-medium">Personnaliser</h2>
-                <button className="block mx-auto"><FaCirclePlus className="text-5xl" /></button>
+                <button className="block mx-auto">
+                <input type="file" id="file" className="hidden" />
+                <label htmlFor="file"><FaCirclePlus className="text-5xl" /></label>
+                </button>
         </div>
         </>
     )

@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 
 export const Settingcalendar = () => {
   return (
-    <div className="flex flex-col items-center justify-center  w-full space-y-72">
+    <div className="flex flex-col items-center justify-center  w-full space-y-52">
       <h1 className="text-4xl font-medium text-center mt-5">Paramètre Calendrier</h1>
 
 
