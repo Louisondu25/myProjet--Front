@@ -734,7 +734,7 @@ const handleAcceptClick = async () => {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full p-2 pl-10 text-sm text-gray-700"
-                  placeholder="Enter a title..."
+                  placeholder="Entrer un titre..."
                 />
                 <div className="flex justify-between">
                   <button
