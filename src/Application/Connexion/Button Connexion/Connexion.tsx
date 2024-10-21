@@ -16,27 +16,34 @@ export const Connect = () => {
     setPassword(e.target.value);
   };
 
-const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
-  event.preventDefault();
-
-  if (!username || !password) {
-    alert('Veuillez remplir tous les champs requis');
-    return;
-  }
-
-  try {
-    const response = await http.post('/login', { email: username, password });
-
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      window.location.href = '/giversdashboard';
-    } else {
-      alert('Erreur de connexion');
+const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+        handleSubmit(event); // Pass the event to handleSubmit
     }
-  } catch (error) {
-    console.error(error);
-    alert('Erreur de connexion');
-  }
+};
+
+const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {
+    // Prevent default form submission
+    event.preventDefault?.();
+
+    if (!username || !password) {
+        alert('Veuillez remplir tous les champs requis');
+        return;
+    }
+
+    try {
+        const response = await http.post('/login', { email: username, password });
+
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            window.location.href = '/giversdashboard';
+        } else {
+            alert('Erreur de connexion');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Erreur de connexion');
+    }
 };
 
   return (
@@ -51,6 +58,7 @@ const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
           placeholder="Saisissez votre Email"
           value={username}
           onChange={handleUserNameChange}
+          onKeyPress={handleKeyPress}
           className="w-60 p-1 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-6"
         />
       <div className="flex items-center">
@@ -59,6 +67,7 @@ const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
           placeholder="Saisissez votre mot de passe"
           value={password}
           onChange={handlePasswordChange}
+          onKeyPress={handleKeyPress}
           className="w-60 p-1 outline outline-1 outline-gray-400 focus:outline-gray-500 focus:ring-1 focus:ring-gray-500 rounded-md mt-3"
         />
       </div>
