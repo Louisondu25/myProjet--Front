@@ -1,70 +1,3 @@
-// import React, { useState, } from "react";
-// import { CiSearch } from "react-icons/ci";
-
-// // Define a type for the task object
-// interface Task {
-//     title: string; // Assuming each task has a 'name' property
-// }
-
-// export const SearchArchivedCard: React.FC = () => {
-//     const [task, setTask] = useState<Task | null>(null); // State to hold the fetched task
-//     const [searchTerm, setSearchTerm] = useState<string>(""); // State for the search input
-
-//     // Fetch task from the backend based on search term
-//     const fetchTask = async (taskName: string) => {
-//         try {
-//             const response = await fetch(`/task?name=${encodeURIComponent(taskName)}`); // Your API endpoint with query parameter
-
-//             if (!response.ok) {
-//                 throw new Error(`HTTP error! status: ${response.status}`);
-//             }
-
-//             const data: Task = await response.json(); // Assuming the response is a single Task object
-//             setTask(data); // Set the fetched task
-//         } catch (error) {
-//             console.error("Error fetching task:", error);
-//         }
-//     };
-
-//     // Function to handle search input change
-//     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//         const value = event.target.value;
-//         setSearchTerm(value);
-
-//         // Fetch task when the search term is not empty
-//         if (value.trim()) {
-//             fetchTask(value.trim());
-//         } else {
-//             setTask(null); // Clear task if search term is empty
-//         }
-//     };
-
-//     return (
-//         <div className="w-full h-screen flex flex-col items-center bg-gradient-to-b to-blue-500 from-cyan-500 to-white p-8">
-//             <h1 className="font-medium text-2xl mb-20">Carte archivée</h1>
-//             <div className="flex items-center">
-//                 <CiSearch className="text-white" />
-//                 <input
-//                     type="text"
-//                     placeholder="Recherche"
-//                     className="px-6 py-1 rounded-md"
-//                     value={searchTerm}
-//                     onChange={handleSearchChange} // Update state on input change
-//                 />
-//             </div>
-//             <div className="flex flex-col mt-20">
-//                 <p className="font-medium">Nom:</p>
-//                 {task ? (
-//                     <p className="mt-2">{task.title}</p> // Display the fetched task name
-//                 ) : (
-//                     <p className="mt-2">Aucun résultat trouvé.</p> // Message when no task is found
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-
 import React, { useState, useEffect } from "react";
 import { CiSearch } from "react-icons/ci";
 import { http } from '../../../../Infrastructure/Http/axios';
@@ -73,6 +6,7 @@ import { http } from '../../../../Infrastructure/Http/axios';
 interface Task {
     id: string;
     title: string;
+    content: string;
     archive: boolean;
 }
 
@@ -165,9 +99,10 @@ export const SearchArchivedCard: React.FC = () => {
                 {matchingCards.length > 0 ? (
                     <div>
                         {matchingCards.map((card) => (
-                            <div key={card.id} className="mt-2">
+                            <div key={card.id} className="mt-2 bg-white rounded-md px-5">
                                 <p className="font-medium">Nom:</p>
                                 <p>{card.title}</p>
+                                <p>{card.content}</p>
                             </div>
                         ))}
                     </div>

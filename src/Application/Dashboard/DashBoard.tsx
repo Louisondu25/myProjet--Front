@@ -22,6 +22,12 @@ interface List {
   tasks?: Task[];
 }
 
+interface ListArchive {
+    id: string;
+    title: string;
+    archive: boolean;
+}
+
 interface Task {
   _id: string;
   title: string;
@@ -50,9 +56,12 @@ export const Dashboard = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showHelpDropdown, setShowHelpDropdown] = useState(false);
   const [showArchiveDropdown, setshowArchiveDropdown] = useState(false);
+  const [showArchivelistsDropdown, setshowArchivelistsDropdown] = useState(false);
   const [token,] = useState(localStorage.getItem('token'));
   const [archiveCardName, setArchiveCardName] = useState('');
+  const [archiveListName, setArchiveListName] = useState('');
   const [, setArchivedCards] = useState<Task[]>([]);
+
 
   useEffect(() => {
   const initializeData = async () => {
@@ -128,6 +137,9 @@ const handleArchivedAcceptClick = async () => {
             await fetchAllCards(); // Pour toutes les cartes
             await fetchArchivedCards(); // Pour les cartes archivées
 
+            // Réinitialiser l'input après l'archivage
+            setArchiveCardName(''); // Remettre l'input à vide pour éviter [object Object]
+
         } catch (error) {
             console.error("Error making PUT request:", error);
         }
@@ -178,9 +190,110 @@ const fetchArchivedCards = async () => {
     }
 };
 
+const getListIdByName = (listName: string) => {
+  const list = lists.find((list) => list.title === listName); // Recherche la liste par son titre
+  return list ? list._id : null; // Retourne l'ID si trouvé, sinon null
+};
+
+const handleArchivedListAcceptClick = async () => {
+    try {
+        if (!archiveListName.trim()) {
+            alert("Veuillez entrer le nom de la liste à archiver.");
+            return;
+        }
+
+        const listId = getListIdByName(archiveListName);
+        if (!listId) {
+            alert(`Liste non trouvée : ${archiveListName}`);
+            return;
+        }
+
+        // Vérifier l'état actuel de la liste
+        const response = await http.get(`/liste/${listId}`, {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+
+        const currentList = response.data;
+        if (currentList.archive === undefined) {
+            await http.put(`/liste/${listId}`, { archive: true }, {
+                headers: { 'Authorization': 'Bearer ' + token },
+            });
+            console.log('Champ archive ajouté et mis à jour pour la liste !');
+        } else if (currentList.archive === false) {
+            await http.put(`/liste/${listId}`, { archive: true }, {
+                headers: { 'Authorization': 'Bearer ' + token },
+            });
+            console.log('Champ archive mis à jour pour la liste !');
+        } else {
+            console.log('La liste est déjà archivée. Aucune mise à jour nécessaire.');
+            return;
+        }
+
+        // Rafraîchir les données de toutes les listes et des listes archivées
+        await fetchAllLists(); // Pour toutes les listes
+        await fetchArchivedLists(); // Pour les listes archivées
+
+        // Réinitialiser l'input après l'archivage
+        setArchiveListName(''); // Remettre l'input à vide pour éviter [object Object]
+
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de la liste:", error);
+    }
+};
+
+const fetchAllLists = async () => {
+    try {
+        console.log('Tentative de récupération de toutes les listes...');
+        const response = await http.get('/listes_by_filters', {
+            headers: { 'Authorization': 'Bearer ' + token },
+            params: {
+                page: 1,
+                limit: 16,
+            }
+        });
+        console.log('Response for fetchAllLists:', response.data); // Ajoutez ce log
+
+        if (response.data && response.data.results) {
+            setLists(response.data.results);
+        } else {
+            console.warn('Aucun résultat trouvé dans la réponse:', response.data);
+        }
+    } catch (error) {
+        console.error("Erreur lors de la récupération des listes:", error);
+    }
+};
+
+const fetchArchivedLists = async () => {
+    try {
+        console.log('Tentative de récupération des listes archivées...');
+        
+        // Récupérer toutes les listes
+        const response = await http.get(`/listes_by_filters?page=1&limit=16`, {
+            headers: { 'Authorization': 'Bearer ' + token }, // Assure-toi d'ajouter le token si nécessaire
+        });
+
+        // Adapter en fonction de la réponse réelle
+        const allLists = response.data; // Assure-toi que cette ligne est correcte selon la structure de la réponse
+
+        // Filtrer pour ne garder que les listes archivées
+        const archivedLists = allLists.filter((list: ListArchive) => list.archive === true);
+
+        // Utiliser archivedLists pour l'affichage
+        setLists(archivedLists); // Met à jour l'état avec les listes archivées
+
+        // Optionnel : afficher les listes archivées récupérées
+        console.log('Listes archivées récupérées:', archivedLists);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des listes archivées:", error);
+    }
+};
 
 const handleArchivedbuttonclick = () => {
   setshowArchiveDropdown(true);
+}
+
+const handleArchivedlistsbuttonclick = () => {
+  setshowArchivelistsDropdown(true);
 }
 
 const handleAcceptClick = async () => {
@@ -220,6 +333,10 @@ const handleAcceptClick = async () => {
 
   const handleArchivedExitClick = () => {
     setshowArchiveDropdown(false);
+  };
+
+  const handleArchivedListsExitClick = () => {
+    setshowArchivelistsDropdown(false);
   };
 
   const fetchLists = async () => {
@@ -592,7 +709,7 @@ const onDragEnd = async (result: DropResult) => {
                             value={archiveCardName}
                             onChange={(e) => setArchiveCardName(e.target.value)}
                             className="w-full p-2 pl-10 text-sm text-gray-700 px-5"
-                            placeholder="Saisissez la carte archivée..."
+                            placeholder="Saisissez la carte..."
                         />
                         <div className="flex justify-between">
                             <button
@@ -610,6 +727,34 @@ const onDragEnd = async (result: DropResult) => {
                         </div>
                     </div>
                 )}
+            </div>
+            <div>
+              <button onClick={handleArchivedlistsbuttonclick} className="flex justify-center items-center bg-white rounded-md px-12 py-1 font-medium shadow-md hover:shadow-lg ml-3 mr-2 mt-2"> <LuFolderArchive className='mr-2'/>Archives Listes</button>
+                {showArchivelistsDropdown && (
+                      <div className="absolute bg-white rounded-md shadow-md p-4 mt-2">
+                          <input
+                              type="text"
+                              value={archiveListName}
+                              onChange={(e) => setArchiveListName(e.target.value)}
+                              className="w-full p-2 pl-10 text-sm text-gray-700 px-5"
+                              placeholder="Saisissez la liste..."
+                          />
+                          <div className="flex justify-between">
+                              <button
+                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+                                  onClick={handleArchivedListAcceptClick}
+                              >
+                                  Accept
+                              </button>
+                              <button
+                                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2"
+                                  onClick={handleArchivedListsExitClick}
+                              >
+                                  Refuser
+                              </button>
+                          </div>
+                      </div>
+                  )}
             </div>
           </div>
         </div>
