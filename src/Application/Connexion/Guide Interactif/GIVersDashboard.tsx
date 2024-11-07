@@ -6,6 +6,7 @@ interface List {
   _id: string;
   board_id: string;
   title: string;
+  archive?: boolean;
 }
 
 interface Card {
@@ -14,6 +15,7 @@ interface Card {
   content: string;
   category_id: string;
   start_at: string;
+  archive?: boolean;
 }
 
 export const Giversdashboard = () => {
@@ -45,7 +47,7 @@ export const Giversdashboard = () => {
         if (listsResponse.status >= 200 && listsResponse.status < 300) {
           const listsData = listsResponse.data;
           if (listsData?.results && Array.isArray(listsData.results)) {
-            const filteredLists = listsData.results.filter((list: List) => list.board_id === boardId);
+            const filteredLists = listsData.results.filter((list: List) => list.board_id === boardId && !list.archive);
 
             const cardsResponse = await http.get(`/tasks_by_filters`, {
               headers: { 'Authorization': 'Bearer ' + token },
@@ -59,11 +61,14 @@ export const Giversdashboard = () => {
                 console.log('Données des cartes :', cards);
                 console.log('Données des listes :', filteredLists);
 
-                const filteredCards = cards.filter((card: Card) =>
-                  filteredLists.some((list: List) => list._id === card.category_id)
-                );
+                const filteredCards = cards
+                  .filter((card: Card) =>
+                    filteredLists.some((list: List) => list._id === card.category_id) && !card.archive
+                  );
 
                 console.log('Cartes filtrées :', filteredCards);
+                console.log('Lists to send:', filteredLists);
+                console.log('Cards to send:', filteredCards);
                 navigate('/dashboard', { state: { lists: filteredLists, cards: filteredCards } });
               } else {
                 console.log('Données des cartes invalides :', cardsData);

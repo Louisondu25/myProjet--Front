@@ -62,7 +62,6 @@ export const Dashboard = () => {
   const [archiveListName, setArchiveListName] = useState('');
   const [, setArchivedCards] = useState<Task[]>([]);
 
-
   useEffect(() => {
   const initializeData = async () => {
     console.log('Initializing data...');
@@ -95,10 +94,12 @@ useEffect(() => {
 }, [lists, cards]);
 
 useEffect(() => {
-  if (lists.length > 0 && cards.length > 0 && filteredCards.length === 0) {
+  if (lists.length > 0 && cards.length > 0) {
     const filtered = filterCardsByListIds(cards, lists);
-    console.log('Filtered cards:', filtered);
+    console.log('Filtered cards after moving:', filtered);
     setFilteredCards(filtered);
+  } else {
+    console.log('Les cartes ou les listes sont vides, impossible de filtrer');
   }
 }, [cards, lists]);
 
@@ -116,77 +117,86 @@ useEffect(() => {
 };
 
 const handleArchivedAcceptClick = async () => {
-        try {
-            if (!archiveCardName.trim()) {
-                alert("Veuillez entrer le nom de la carte à archiver.");
-                return;
-            }
-
-            const cardId = getCardIdByName(archiveCardName);
-            if (!cardId) {
-                alert(`Carte non trouvée : ${archiveCardName}`);
-                return;
-            }
-
-            await http.put(`/task/${cardId}`, { archive: true }, {
-                headers: { 'Authorization': 'Bearer ' + token },
-            });
-            console.log('Archive field updated successfully!');
-
-            // Rafraîchir les données de la carte et les cartes archivées
-            await fetchAllCards(); // Pour toutes les cartes
-            await fetchArchivedCards(); // Pour les cartes archivées
-
-            // Réinitialiser l'input après l'archivage
-            setArchiveCardName(''); // Remettre l'input à vide pour éviter [object Object]
-
-        } catch (error) {
-            console.error("Error making PUT request:", error);
+    try {
+        // Vérifier si le champ pour le nom de la carte à archiver est rempli
+        if (!archiveCardName.trim()) {
+            alert("Veuillez entrer le nom de la carte à archiver.");
+            return;
         }
-    };
+
+        // Récupérer l'ID de la carte en fonction du nom
+        const cardId = getCardIdByName(archiveCardName);
+        if (!cardId) {
+            alert(`Carte non trouvée : ${archiveCardName}`);
+            return;
+        }
+
+        // Archiver la carte en mettant à jour le champ "archive" à true
+        await http.put(`/task/${cardId}`, { archive: true }, {
+            headers: { 'Authorization': 'Bearer ' + token },
+        });
+        console.log('Champ archive mis à jour pour la carte !');
+
+        // Rafraîchir les cartes non archivées et les cartes archivées
+        await fetchAllCards(); // Rafraîchir les cartes non archivées
+        await fetchArchivedCards(); // Rafraîchir les cartes archivées
+
+        // Réinitialiser l'input après l'archivage
+        setArchiveCardName('');
+    } catch (error) {
+        console.error("Erreur lors de la mise à jour de la carte:", error);
+    }
+};
 
 const fetchAllCards = async () => {
     try {
+        console.log('Tentative de récupération de toutes les cartes non archivées...');
+        
+        // Appel à l'API pour récupérer les cartes non archivées
         const response = await http.get('/tasks_by_filters', {
             headers: { 'Authorization': 'Bearer ' + token },
             params: {
-                page: 1, // ou la page souhaitée
-                limit: 11, // ou le nombre d'éléments par page
+                page: 1,  // Numéro de la page pour la pagination
+                limit: 11, // Nombre de cartes par page
+                archive: false // Récupérer uniquement les cartes non archivées
             }
         });
 
-        // Vérifiez que la réponse contient des résultats
+        // Vérifier si la réponse contient des résultats
         if (response.data && response.data.results) {
-            console.log('All fetched cards:', response.data.results); // Debugging
-            setCards(response.data.results); // Mettez à jour l'état avec les résultats
+            console.log('Cartes non archivées récupérées:', response.data.results);
+            setCards(response.data.results); // Mettre à jour l'état avec les cartes non archivées
         } else {
-            console.error('No results found in the response:', response.data);
+            console.warn('Aucune carte non archivée trouvée dans la réponse:', response.data);
         }
     } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error("Erreur lors de la récupération des cartes:", error);
     }
 };
 
 const fetchArchivedCards = async () => {
     try {
+        console.log('Tentative de récupération des cartes archivées...');
+        
+        // Appel à l'API pour récupérer les cartes archivées
         const response = await http.get('/tasks_by_filters', {
             headers: { 'Authorization': 'Bearer ' + token },
             params: {
-                page: 1, // Numéro de page pour la pagination
-                limit: 11, // Nombre d'éléments par page
-                archive: true
+                page: 1,  // Numéro de la page pour la pagination
+                limit: 11, // Nombre de cartes par page
+                archive: true // Récupérer uniquement les cartes archivées
             }
         });
 
-        // Vérifiez que la réponse contient des résultats
+        // Vérifier si la réponse contient des résultats
         if (response.data && response.data.results) {
-            console.log('Fetched archived cards:', response.data.results); // Debugging
-            setArchivedCards(response.data.results); // Assurez-vous que les résultats sont dans `data.results`
+            console.log('Cartes archivées récupérées:', response.data.results);
+            setArchivedCards(response.data.results); // Mettre à jour l'état avec les cartes archivées
         } else {
-            console.error('No archived results found in the response:', response.data);
+            console.error('Aucune carte archivée trouvée dans la réponse:', response.data);
         }
     } catch (error) {
-        console.error("Error fetching archived cards:", error);
+        console.error("Erreur lors de la récupération des cartes archivées:", error);
     }
 };
 
@@ -214,12 +224,7 @@ const handleArchivedListAcceptClick = async () => {
         });
 
         const currentList = response.data;
-        if (currentList.archive === undefined) {
-            await http.put(`/liste/${listId}`, { archive: true }, {
-                headers: { 'Authorization': 'Bearer ' + token },
-            });
-            console.log('Champ archive ajouté et mis à jour pour la liste !');
-        } else if (currentList.archive === false) {
+        if (currentList.archive === undefined || currentList.archive === false) {
             await http.put(`/liste/${listId}`, { archive: true }, {
                 headers: { 'Authorization': 'Bearer ' + token },
             });
@@ -229,13 +234,12 @@ const handleArchivedListAcceptClick = async () => {
             return;
         }
 
-        // Rafraîchir les données de toutes les listes et des listes archivées
-        await fetchAllLists(); // Pour toutes les listes
-        await fetchArchivedLists(); // Pour les listes archivées
+        // Rafraîchir les listes après archivage, ne montrant que celles non archivées
+        await fetchAllLists(); // Charge uniquement les listes non archivées
+        await fetchArchivedLists();
 
         // Réinitialiser l'input après l'archivage
-        setArchiveListName(''); // Remettre l'input à vide pour éviter [object Object]
-
+        setArchiveListName('');
     } catch (error) {
         console.error("Erreur lors de la mise à jour de la liste:", error);
     }
@@ -243,15 +247,16 @@ const handleArchivedListAcceptClick = async () => {
 
 const fetchAllLists = async () => {
     try {
-        console.log('Tentative de récupération de toutes les listes...');
+        console.log('Tentative de récupération de toutes les listes non archivées...');
         const response = await http.get('/listes_by_filters', {
             headers: { 'Authorization': 'Bearer ' + token },
             params: {
                 page: 1,
                 limit: 16,
+                archive: false, // Récupérer uniquement les listes non archivées
             }
         });
-        console.log('Response for fetchAllLists:', response.data); // Ajoutez ce log
+        console.log('Réponse pour fetchAllLists (non archivées):', response.data);
 
         if (response.data && response.data.results) {
             setLists(response.data.results);
@@ -267,21 +272,15 @@ const fetchArchivedLists = async () => {
     try {
         console.log('Tentative de récupération des listes archivées...');
         
-        // Récupérer toutes les listes
         const response = await http.get(`/listes_by_filters?page=1&limit=16`, {
-            headers: { 'Authorization': 'Bearer ' + token }, // Assure-toi d'ajouter le token si nécessaire
+            headers: { 'Authorization': 'Bearer ' + token },
         });
 
-        // Adapter en fonction de la réponse réelle
-        const allLists = response.data; // Assure-toi que cette ligne est correcte selon la structure de la réponse
+        // Filtrer pour garder uniquement les listes archivées
+        const archivedLists = response.data?.results.filter((list: ListArchive) => list.archive === true);
 
-        // Filtrer pour ne garder que les listes archivées
-        const archivedLists = allLists.filter((list: ListArchive) => list.archive === true);
+        setLists(archivedLists);
 
-        // Utiliser archivedLists pour l'affichage
-        setLists(archivedLists); // Met à jour l'état avec les listes archivées
-
-        // Optionnel : afficher les listes archivées récupérées
         console.log('Listes archivées récupérées:', archivedLists);
     } catch (error) {
         console.error("Erreur lors de la récupération des listes archivées:", error);
@@ -442,35 +441,27 @@ const onDragEnd = async (result: DropResult) => {
   console.log('onDragEnd result:', result);
   const { destination, source } = result;
 
-  // If the item was dropped outside of a droppable area, do nothing
   if (!destination) {
     return;
   }
 
-  // If the item was dropped in the same position, do nothing
   if (destination.droppableId === source.droppableId && destination.index === source.index) {
     return;
   }
 
-  // Get the card that was dragged
   const card = cards.find((card) => card._id === result.draggableId);
-
   console.log('Card being dragged:', card);
 
-  // If the card is not found, do nothing
   if (!card) {
     console.error("Card not found");
     return;
   }
 
-  // Check if the destination droppable ID is valid
   const validListId = lists.find((list) => list._id === destination.droppableId);
   if (validListId) {
-    // Update the card's category_id property
     card.category_id = destination.droppableId;
     console.log('Card category_id updated to:', card.category_id);
 
-    // Update the lists state
     const updatedLists = lists.map((list) => {
       if (list._id === source.droppableId) {
         return { ...list, tasks: list.tasks?.filter((task) => task._id !== card._id) };
@@ -479,9 +470,9 @@ const onDragEnd = async (result: DropResult) => {
       }
       return list;
     });
+
     setLists(updatedLists);
 
-    // Update the cards state
     const updatedCards = cards.map((c) => {
       if (c._id === card._id) {
         return { ...c, category_id: destination.droppableId };
@@ -491,25 +482,26 @@ const onDragEnd = async (result: DropResult) => {
     console.log('Updated cards:', updatedCards);
     setCards(updatedCards);
 
-    // Update the filteredCards state
+    // Mise à jour du filtrage des cartes
     const updatedFilteredCards = filterCardsByListIds(updatedCards, updatedLists);
     console.log('Updated filteredCards:', updatedFilteredCards);
     setFilteredCards(updatedFilteredCards);
 
-    // Send a request to the server to update the card's category_id property
+    // Envoi de la mise à jour au serveur
     try {
       const response = await http.put(`/task/${card._id}`, { category_id: card.category_id });
       console.log('Response from update:', response);
       if (response.status === 200) {
-        // Recharger les cartes après la mise à jour
-        await fetchCards(); // Assurez-vous que ce soit await pour ne pas avoir des appels simultanés
+        // Une fois le serveur mis à jour, on recharge les cartes
+        await fetchCards();
       }
     } catch (error) {
       console.error('Error updating card:', error);
+      // Restaurer les cartes à leur état précédent en cas d'erreur serveur
+      setCards(cards);  // Restauration des cartes à l'état initial avant mise à jour
     }
   } else {
     console.error('Invalid list ID');
-    return;
   }
 };
 
@@ -668,7 +660,7 @@ const onDragEnd = async (result: DropResult) => {
           </div>
           <div>
             <button
-              className="flex justify-center items-center bg-white rounded-md px-6 py-1 font-medium shadow-md hover:shadow-lg ml-3 mr-2"
+              className="flex justify-center items-center bg-white rounded-md px-11 py-1 font-medium shadow-md hover:shadow-lg ml-3 mr-2"
               onClick={handleButtonClick}
             >
               <FaPlus /> Ajouter une liste
@@ -699,8 +691,8 @@ const onDragEnd = async (result: DropResult) => {
               </div>
             )}
             <div>
-                <button onClick={handleArchivedbuttonclick} className="flex justify-center items-center bg-white rounded-md px-12 py-1 font-medium shadow-md hover:shadow-lg ml-3 mr-2 mt-2">
-                    <LuFolderArchive className='mr-2'/> Archives
+                <button onClick={handleArchivedbuttonclick} className="flex justify-center items-center bg-white rounded-md px-11 py-1 font-medium shadow-md hover:shadow-lg ml-3 mr-2 mt-2">
+                    <LuFolderArchive className='mr-2'/> Archives Cartes
                 </button>
                 {showArchiveDropdown && (
                     <div className="absolute bg-white rounded-md shadow-md p-4 mt-2">
