@@ -110,7 +110,7 @@ export const Giversdashboard = () => {
         <p className="text-xl mb-4">Étape 3 : Cliquez sur terminer</p>
         <button
           className="next-button text-center bg-blue-300 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg mt-14"
-          onClick={() => handleFinishClick('66e5981ee53acf69944d8d01')}
+          onClick={() => handleFinishClick('67e2f987a19285e47f59bf4f')}
           disabled={loading} // Désactiver le bouton pendant le chargement
         >
           {loading ? 'Chargement...' : 'Terminée'}

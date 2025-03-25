@@ -4,9 +4,9 @@ export const FirstPageGI: React.FC<{onClick: Dispatch<React.SetStateAction<numbe
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center">
+      <div className="bg-home flex flex-col items-center justify-center">
         <h1 className=" text-4xl text-center font-bold mt-8">Comment fonctionne Tree Low ?</h1>
-        <img src="/public/Natural_Green_Interior_Design_Mood_Board_Photo_Collage_1 (2).svg" alt="Logo Tree Low" width="400px" />
+        <img src="/public/télécharger.svg" alt="Logo Tree Low" width="400px" />
         <p className="text-xl text-center mt-8">Une Application de gestion de taches et de projet</p>
         <p className=" text-xl text-center mt-24">
           L'application Tree low est un moyen de gérer ces rendez-vous projet ou encore des tâches à effectuer.

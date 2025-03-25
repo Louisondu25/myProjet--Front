@@ -3,7 +3,7 @@ import React, {Dispatch} from "react";
 export const ThirdPageGI: React.FC<{setSkipVerrouillage: Dispatch<React.SetStateAction<boolean>>}> = ({setSkipVerrouillage}) => {
   return (
     <>
-      <div className="flex flex-col items-center justify-center">
+      <div className=" bg-home flex flex-col items-center justify-center">
             <h1 className=" text-4xl  font-bold text-center mt-8">Qu'allez-Vous découvrir sur Tree Low?</h1>
           <div className="flex gap-16 mt-10">
             <div className="flex flex-row items-center mb-4">
