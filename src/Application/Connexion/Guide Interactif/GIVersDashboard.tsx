@@ -69,7 +69,7 @@ export const Giversdashboard = () => {
                 console.log('Cartes filtrées :', filteredCards);
                 console.log('Lists to send:', filteredLists);
                 console.log('Cards to send:', filteredCards);
-                navigate('/dashboard', { state: { lists: filteredLists, cards: filteredCards } });
+                navigate(`/dashboard/${boardId}`);
               } else {
                 console.log('Données des cartes invalides :', cardsData);
               }
@@ -110,7 +110,7 @@ export const Giversdashboard = () => {
         <p className="text-xl mb-4">Étape 3 : Cliquez sur terminer</p>
         <button
           className="next-button text-center bg-blue-300 rounded-md px-6 py-2 font-medium shadow-md hover:shadow-lg mt-14"
-          onClick={() => handleFinishClick('67e2f987a19285e47f59bf4f')}
+          onClick={() => handleFinishClick('67fad43ac68de4587fc4b4c1')}
           disabled={loading} // Désactiver le bouton pendant le chargement
         >
           {loading ? 'Chargement...' : 'Terminée'}

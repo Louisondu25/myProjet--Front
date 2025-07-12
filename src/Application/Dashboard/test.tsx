@@ -95,7 +95,7 @@ const handleFetchLists = async () => {
     console.log('Received lists data:', listsData);
     let filteredLists = [];
     if (listsData && listsData.results && Array.isArray(listsData.results)) {
-      filteredLists = listsData.results.filter((list: { board_id: string }) => list.board_id === '66e5981ee53acf69944d8d01');
+      filteredLists = listsData.results.filter((list: { board_id: string }) => list.board_id === '67e9276bb7cd2d0e4313f45b');
       console.log('Filtered lists:', filteredLists);
       setLists(filteredLists);
       setTotalLists(listsData.count);

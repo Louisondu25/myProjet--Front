@@ -53,7 +53,7 @@ export const router = createBrowserRouter([
         element: <Giversdashboard/>
     },
     {
-        path: "/dashboard",
+        path: "/dashboard/:boardId",
         element: <Dashboard/>
     },
     {
